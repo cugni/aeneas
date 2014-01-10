@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:keyspace xmlns:tns="http://cassamdrabm.bsc.es/CassandraModel" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xmlns:cmt="http://cassamdrabm.bsc.es/CommonTypes"
+              xsi:schemaLocation="http://cassamdrabm.bsc.es/CassandraModel ../src/main/resources/CassandraModel.xsd"
+              name="clusteringtest">            
+    <tns:strategy>SimpleStrategy</tns:strategy>
+    <tns:replicationFactor>1</tns:replicationFactor>
+
+    <tns:columnFamily name="framemetadata">
+        <tns:fixedRow>
+            <tns:key type="Int32Type">-1</tns:key>
+            <tns:column name="number of atoms">          
+                <tns:fixedColumnName name="natoms">
+                    <cmt:standardType>UTF8Type</cmt:standardType>
+                </tns:fixedColumnName>
+                <tns:refPath>
+                    <tns:level value="frame">
+                        <tns:keyDest position="0"/>
+                    </tns:level>
+                    <tns:level value="natoms"/>
+                </tns:refPath>
+            </tns:column>
+            <tns:column name="precision">
+                <tns:fixedColumnName name="prec">
+                    <cmt:standardType>UTF8Type</cmt:standardType>
+                </tns:fixedColumnName>                
+                <tns:refPath>
+                    <tns:level value="frame">
+                        <tns:keyDest position="0"/>
+                    </tns:level>
+                    <tns:level value="prec"/>
+                </tns:refPath> 		
+            </tns:column>
+        </tns:fixedRow>
+        <tns:column name="step">
+            <tns:fixedColumnName name="step">
+                <cmt:standardType>UTF8Type</cmt:standardType>
+            </tns:fixedColumnName>
+            <tns:refPath>
+                <tns:level value="frame" >
+                    <tns:keyDest position="0"/>
+                </tns:level>
+                <tns:level value="step"/>
+            </tns:refPath>
+        </tns:column>
+        <tns:column name="box">
+            <tns:fixedColumnName name="box">
+                <cmt:standardType>UTF8Type</cmt:standardType>
+            </tns:fixedColumnName>
+            <tns:refPath>
+                <tns:level value="frame">
+                    <tns:keyDest position="0"/>
+                </tns:level> 
+                <tns:level value="box"/>
+            </tns:refPath>
+        </tns:column>       
+    </tns:columnFamily>
+    <tns:columnFamily name="points">
+        <tns:column index="true" name="point frame">
+           
+            <tns:refPath  > <!-- This indicates to use the value as column name -->
+                <tns:level value="frame">
+                    <tns:columnDest position="1"/>
+                </tns:level> 
+                <tns:level value="points" />
+                <tns:level value="index">
+                    <tns:columnDest position="0"/>
+                </tns:level>
+                <tns:keyDest position="0">
+                  <tns:clusterer from="{2.7,3.6,0.5}" to="{8.0,11.4,8.8}" intervals="100" />
+                </tns:keyDest>
+                <tns:columnDest position="2"/>
+            </tns:refPath>
+            <tns:valueless></tns:valueless>
+        </tns:column>
+    </tns:columnFamily>
+    <tns:columnFamily name="time">
+        <tns:column name="time">
+            <tns:refPath >
+                <tns:level value="frame">
+                    <tns:columnDest position="0"/>
+                </tns:level> 
+                <tns:level value="time" />
+                <tns:keyDest position="0"/>
+            </tns:refPath>  
+            <tns:valueless></tns:valueless>
+        </tns:column>
+    </tns:columnFamily>
+</tns:keyspace>

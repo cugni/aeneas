@@ -1,0 +1,6 @@
+/code-generator/target/
+/cassandra/cassandra-metrics-recorder/target/
+/cassandra/cassandra-datamodel/target/
+/cassandra/datamodel/target/
+/cassandra/metrics-recorder/target/
+/cassandra/mapping/target/

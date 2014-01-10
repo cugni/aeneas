@@ -1,0 +1,59 @@
+create keyspace metricspace
+  with placement_strategy = 'SimpleStrategy'
+  and strategy_options = {replication_factor : 1}
+  and durable_writes = true;
+
+use metricspace;
+
+create column family lists
+  with column_type = 'Standard'
+  and comparator = 'DynamicCompositeType(D=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.DoubleType),d=>org.apache.cassandra.db.marshal.DoubleType,b=>org.apache.cassandra.db.marshal.BytesType,A=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.AsciiType),B=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.BytesType),a=>org.apache.cassandra.db.marshal.AsciiType,L=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.LongType),M=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.IntegerType),l=>org.apache.cassandra.db.marshal.LongType,m=>org.apache.cassandra.db.marshal.IntegerType,I=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.Int32Type),i=>org.apache.cassandra.db.marshal.Int32Type,U=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.UUIDType),T=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.TimeUUIDType),u=>org.apache.cassandra.db.marshal.UUIDType,t=>org.apache.cassandra.db.marshal.TimeUUIDType,s=>org.apache.cassandra.db.marshal.UTF8Type,S=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.UTF8Type),X=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.LexicalUUIDType),x=>org.apache.cassandra.db.marshal.LexicalUUIDType)'
+  and default_validation_class = 'BytesType'
+  and key_validation_class = 'UTF8Type'
+  and read_repair_chance = 1.0
+  and dclocal_read_repair_chance = 0.0
+  and populate_io_cache_on_flush = false
+  and gc_grace = 864000
+  and min_compaction_threshold = 4
+  and max_compaction_threshold = 32
+  and replicate_on_write = true
+  and compaction_strategy = 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy'
+  and caching = 'KEYS_ONLY'
+  and compression_options = {'sstable_compression' : 'org.apache.cassandra.io.compress.SnappyCompressor'};
+
+create column family metrics
+  with column_type = 'Standard'
+  and comparator = 'CompositeType(org.apache.cassandra.db.marshal.LongType,org.apache.cassandra.db.marshal.UTF8Type)'
+  and default_validation_class = 'DynamicCompositeType(D=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.DoubleType),d=>org.apache.cassandra.db.marshal.DoubleType,b=>org.apache.cassandra.db.marshal.BytesType,A=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.AsciiType),B=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.BytesType),a=>org.apache.cassandra.db.marshal.AsciiType,L=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.LongType),M=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.IntegerType),l=>org.apache.cassandra.db.marshal.LongType,m=>org.apache.cassandra.db.marshal.IntegerType,I=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.Int32Type),i=>org.apache.cassandra.db.marshal.Int32Type,U=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.UUIDType),T=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.TimeUUIDType),u=>org.apache.cassandra.db.marshal.UUIDType,t=>org.apache.cassandra.db.marshal.TimeUUIDType,s=>org.apache.cassandra.db.marshal.UTF8Type,S=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.UTF8Type),X=>org.apache.cassandra.db.marshal.ReversedType(org.apache.cassandra.db.marshal.LexicalUUIDType),x=>org.apache.cassandra.db.marshal.LexicalUUIDType)'
+  and key_validation_class = 'CompositeType(org.apache.cassandra.db.marshal.UTF8Type,org.apache.cassandra.db.marshal.UTF8Type,org.apache.cassandra.db.marshal.UTF8Type)'
+  and read_repair_chance = 1.0
+  and dclocal_read_repair_chance = 0.0
+  and populate_io_cache_on_flush = false
+  and gc_grace = 864000
+  and min_compaction_threshold = 4
+  and max_compaction_threshold = 32
+  and replicate_on_write = true
+  and compaction_strategy = 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy'
+  and caching = 'KEYS_ONLY'
+  and compression_options = {'sstable_compression' : 'org.apache.cassandra.io.compress.SnappyCompressor'};
+
+create column family tests
+  with column_type = 'Standard'
+  and comparator = 'CompositeType(org.apache.cassandra.db.marshal.UTF8Type,org.apache.cassandra.db.marshal.UTF8Type,org.apache.cassandra.db.marshal.UTF8Type)'
+  and default_validation_class = 'LongType'
+  and key_validation_class = 'UTF8Type'
+  and read_repair_chance = 1.0
+  and dclocal_read_repair_chance = 0.0
+  and populate_io_cache_on_flush = false
+  and gc_grace = 864000
+  and min_compaction_threshold = 4
+  and max_compaction_threshold = 32
+  and replicate_on_write = true
+  and compaction_strategy = 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy'
+  and caching = 'KEYS_ONLY'
+  and column_metadata = [
+    {column_name : 'stop',
+    validation_class : LongType},
+    {column_name : 'start',
+    validation_class : LongType}]
+  and compression_options = {'sstable_compression' : 'org.apache.cassandra.io.compress.SnappyCompressor'};
