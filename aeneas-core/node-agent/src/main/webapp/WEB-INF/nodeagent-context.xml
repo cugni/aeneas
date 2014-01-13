@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+  
+    <context:component-scan base-package="es.bsc.aeneas.nodeagent" />
+          <bean id="resourceHolder" class="es.bsc.aeneas.nodeagent.ResourceHolder" factory-method="getResourceHolder" />
+
+    <bean  autowire-candidate="true" id="conf" class="es.bsc.aeneas.commons.VerboseConfiguration">
+        <constructor-arg>
+            <list>
+                <bean class="org.apache.commons.configuration.SystemConfiguration"/>
+
+                <bean class="org.apache.commons.configuration.XMLConfiguration">
+                    <constructor-arg value='#{f1.exists()?f1:resourceHolder.getResource("META-INF/nodeagent-config.xml")}'/>
+                </bean>
+            </list>
+        </constructor-arg>         
+    </bean>
+
+    <bean id="cl" class="java.lang.ClassLoader" factory-method="getSystemClassLoader" />
+    
+    <!--    The core of the node agent-->
+    <bean id="nodeAgent" class="es.bsc.aeneas.nodeagent.SimpleNodeAgent" init-method="start" destroy-method="shutDown">
+        <property name="metricsReaders"  >
+            <list>
+                <ref bean="JMXCassandraReader"/>
+                <ref bean="IOstatReader"/>
+                <ref bean="PagefaultReader"/>
+                <ref bean="NetStatReader" />
+            </list>
+        </property>
+        <property name="recorders">
+            <list>
+                <ref bean="AeneasRecorder" />
+            </list>
+        </property>
+    </bean>
+    
+    <!--    The metric storer -->
+    <bean id="AeneasRecorder" class="es.bsc.aeneas.nodeagent.metricstorer.AeneasMetricsStorer"   >
+        <constructor-arg  >
+            <bean  class="es.bsc.aeneas.loader.LightXMLCassandraSetter">
+                <constructor-arg type="java.lang.String" value="metricspace.cm.xml"/>
+                <constructor-arg type="java.lang.String" value="MetricsReferenceModel.xml"/>
+            </bean>    
+        </constructor-arg>
+    </bean>
+    
+      <!--    The workspace storer -->
+    <bean id="workspaceRecorder" class="es.bsc.aeneas.nodeagent.metricstorer.AeneasMetricsStorer"   >
+        <constructor-arg  >
+            <bean  class="es.bsc.aeneas.loader.LightXMLCassandraSetter">
+                <constructor-arg type="java.lang.String" value="workspace.cm.xml"/>
+                <constructor-arg type="java.lang.String" value="WorkspaceReferenceModel.xml"/>
+            </bean>    
+        </constructor-arg>
+    </bean>
+ 
+    <!--    metrics readers-->
+    <bean id="IOstatReader" class="es.bsc.aeneas.nodeagent.readers.IOstatReader" >
+        <constructor-arg value='#{conf.getProperty("iostat-reader.deviceregexp")}'/>
+    </bean>
+    <bean id="NetStatReader" class="es.bsc.aeneas.nodeagent.readers.NetStatReader" >
+        <constructor-arg value='#{conf.getProperty("netstat-reader.interfaceregexp")}'/>
+    </bean>
+    <bean id="PagefaultReader" class="es.bsc.aeneas.nodeagent.readers.PagefaultReader" />
+    <bean id="JMXCassandraReader" class="es.bsc.aeneas.nodeagent.readers.JMXCassandraReader"/>
+    
+    <!--    Configuretion providers-->
+    <bean id="f1" class="java.io.File" >
+        <constructor-arg type="java.lang.String" value="nodeagent-config.xml"/>
+    </bean>
+</beans>

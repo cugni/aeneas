@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns1:model
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xmlns:ns1='http://cassamdrabm.bsc.es/QueryImplementation'
+    xmlns:cmt="http://cassamdrabm.bsc.es/CommonTypes"
+    xsi:schemaLocation='http://cassamdrabm.bsc.es/QueryImplementation ../src/main/resources/QueryImplementation.xsd'>
+    <ns1:query name="getMetadata">
+        <ns1:var name="natoms" scope="OUTPUT_VAR" collectionType="SIMPLE_TYPE">
+            <cmt:standardType>Int32Type</cmt:standardType>
+        </ns1:var>
+        <ns1:var name="prec" scope="OUTPUT_VAR" collectionType="SIMPLE_TYPE">
+            <cmt:standardType>Int32Type</cmt:standardType>
+        </ns1:var>
+        <ns1:getRow columnFamily="frame">
+            <ns1:key>
+                <ns1:simple>
+                    <ns1:fixed type="Int32Type">-1</ns1:fixed>                    
+                </ns1:simple>
+            </ns1:key>
+            <ns1:foreachColumn>
+                <ns1:columnName>
+                    <ns1:simple>
+                        <ns1:fixed type="UTF8Type">natoms</ns1:fixed>  
+                    </ns1:simple>
+                </ns1:columnName>
+                <ns1:setResultColumnValue>natoms</ns1:setResultColumnValue>               
+            </ns1:foreachColumn>
+            <ns1:foreachColumn>
+                <ns1:columnName>
+                    <ns1:simple>
+                        <ns1:fixed type="UTF8Type">prec</ns1:fixed>       
+                    </ns1:simple>
+                </ns1:columnName>
+                <ns1:setResultColumnValue>prec</ns1:setResultColumnValue>               
+            </ns1:foreachColumn>
+        </ns1:getRow>
+    </ns1:query>
+   
+    <ns1:query name="getFrameInfo" >
+        <ns1:var name="frame" scope="INPUT_VAR" collectionType="SIMPLE_TYPE">
+            <cmt:standardType>Int32Type</cmt:standardType>
+        </ns1:var>
+        <ns1:var name="step" scope="OUTPUT_VAR" collectionType="SIMPLE_TYPE">
+            <cmt:standardType>Int32Type</cmt:standardType>
+        </ns1:var>
+        <ns1:var name="box" scope="OUTPUT_VAR" collectionType="SIMPLE_TYPE">
+            <cmt:customType>es.bsc.aeneas.model.marshalling.BoxType</cmt:customType>
+        </ns1:var>
+        <ns1:getRow columnFamily="frame">
+            <ns1:key>
+                <ns1:simple>
+                    <ns1:varRef>frame</ns1:varRef>
+                </ns1:simple>
+            </ns1:key>
+            <ns1:foreachColumn>
+                <ns1:columnName>
+                    <ns1:simple>
+                        <ns1:fixed type="UTF8Type">step</ns1:fixed>     
+                    </ns1:simple>
+                </ns1:columnName>
+                <ns1:setResultColumnValue>step</ns1:setResultColumnValue>
+	   
+            </ns1:foreachColumn>	
+            <ns1:foreachColumn>
+                <ns1:columnName>
+                    <ns1:simple>
+                        <ns1:fixed type="UTF8Type">box</ns1:fixed>       
+                    </ns1:simple>
+                </ns1:columnName>
+                <ns1:setResultColumnValue>box</ns1:setResultColumnValue>
+	   
+            </ns1:foreachColumn>	 
+        </ns1:getRow>
+    </ns1:query>
+    <ns1:query name="getFramePoints">
+        <ns1:var name="frame" scope="INPUT_VAR" collectionType="SIMPLE_TYPE">
+            <cmt:standardType>Int32Type</cmt:standardType>
+        </ns1:var>
+       
+        <ns1:var name="pointFrom" scope="INPUT_VAR" collectionType="SIMPLE_TYPE">
+            <cmt:standardType>Int32Type</cmt:standardType>
+        </ns1:var>
+        <ns1:var name="pointTo" scope="INPUT_VAR" collectionType="SIMPLE_TYPE">
+            <cmt:standardType>Int32Type</cmt:standardType>
+        </ns1:var>
+        <ns1:var name="points" scope="OUTPUT_VAR" collectionType="LIST_TYPE">
+            <cmt:customType>es.bsc.aeneas.model.marshalling.PointType</cmt:customType>
+        </ns1:var>
+        <ns1:getRow columnFamily="frame">
+            <ns1:key>
+                <ns1:simple>
+                    <ns1:varRef>frame</ns1:varRef>
+                </ns1:simple>
+            </ns1:key>
+            <ns1:foreachColumn>
+                <ns1:columnNameRange>
+                    <ns1:from>
+                        <ns1:simple>
+                            <ns1:varRef>pointFrom</ns1:varRef>
+                        </ns1:simple>
+                    </ns1:from>
+                    <ns1:to>
+                        <ns1:simple>
+                            <ns1:varRef>pointTo</ns1:varRef>
+                        </ns1:simple>
+                    </ns1:to>                         
+                </ns1:columnNameRange>
+                <ns1:setResultColumnValue>points</ns1:setResultColumnValue>
+            </ns1:foreachColumn>  
+        </ns1:getRow>
+    </ns1:query>
+    <ns1:query name="getFrameRangePoints">
+        <ns1:var name="frameFrom" scope="INPUT_VAR" collectionType="SIMPLE_TYPE">
+            <cmt:standardType>Int32Type</cmt:standardType>
+        </ns1:var>
+        <ns1:var name="frameTo" scope="INPUT_VAR" collectionType="SIMPLE_TYPE">
+            <cmt:standardType>Int32Type</cmt:standardType>
+        </ns1:var>
+        <ns1:var name="pointFrom" scope="INPUT_VAR" collectionType="SIMPLE_TYPE">
+            <cmt:standardType>Int32Type</cmt:standardType>
+        </ns1:var>
+        <ns1:var name="pointTo" scope="INPUT_VAR" collectionType="SIMPLE_TYPE">
+            <cmt:standardType>Int32Type</cmt:standardType>
+        </ns1:var>
+        <ns1:var name="points" scope="OUTPUT_VAR" collectionType="TABLE_TYPE">
+            <cmt:customType>es.bsc.aeneas.model.marshalling.PointType</cmt:customType>
+        </ns1:var>
+        <ns1:getRow columnFamily="frame">
+            <ns1:rangeKey>
+                <ns1:from>
+                    <ns1:simple>
+                        <ns1:varRef>frameFrom</ns1:varRef>
+                    </ns1:simple>
+                </ns1:from>
+                <ns1:to>
+                    <ns1:simple> 
+                        <ns1:varRef>frameTo</ns1:varRef>
+                    </ns1:simple>
+                </ns1:to>
+            </ns1:rangeKey>   
+            <ns1:foreachColumn>
+                <ns1:columnNameRange>
+                    <ns1:from>
+                        <ns1:simple>
+                            <ns1:varRef>pointFrom</ns1:varRef>
+                        </ns1:simple>
+                    </ns1:from>
+                    <ns1:to>
+                        <ns1:simple>
+                            <ns1:varRef>pointTo</ns1:varRef>
+                        </ns1:simple>
+                    </ns1:to>
+                </ns1:columnNameRange>
+                <ns1:setResultColumnValue>points</ns1:setResultColumnValue>
+            </ns1:foreachColumn>	  
+        </ns1:getRow>
+    </ns1:query>
+    <ns1:query name="getFramePointsByTime">
+        <ns1:var name="timeFrom" scope="INPUT_VAR" collectionType="SIMPLE_TYPE">
+            <cmt:standardType>LongType</cmt:standardType>
+        </ns1:var>
+        <ns1:var name="timeTo" scope="INPUT_VAR" collectionType="SIMPLE_TYPE">
+            <cmt:standardType>LongType</cmt:standardType>
+        </ns1:var>
+        <ns1:var name="pointFrom" scope="INPUT_VAR" collectionType="SIMPLE_TYPE">
+            <cmt:standardType>Int32Type</cmt:standardType>
+        </ns1:var>
+        <ns1:var name="pointTo" scope="INPUT_VAR" collectionType="SIMPLE_TYPE">
+            <cmt:standardType>Int32Type</cmt:standardType>
+        </ns1:var>        
+        <ns1:var name="frames" scope="TMP_VAR" collectionType="LIST_TYPE">
+            <cmt:standardType>Int32Type</cmt:standardType>
+        </ns1:var>	    
+        <ns1:var name="points" scope="OUTPUT_VAR" collectionType="TABLE_TYPE">
+            <cmt:customType>es.bsc.aeneas.model.marshalling.PointType</cmt:customType>
+        </ns1:var>
+        <ns1:getRow columnFamily="time">
+            <ns1:rangeKey>
+                <ns1:from>
+                    <ns1:simple>
+                        <ns1:varRef>timeFrom</ns1:varRef>
+                    </ns1:simple>
+              
+                </ns1:from>
+                <ns1:to>
+                    <ns1:simple>
+                        <ns1:varRef>timeTo</ns1:varRef>
+                    </ns1:simple>
+                </ns1:to>
+            </ns1:rangeKey>   
+            <ns1:foreachColumn>
+                <ns1:selectAll>
+                    <cmt:standardType>Int32Type</cmt:standardType>
+                </ns1:selectAll>
+                <ns1:setResultColumnName>frames</ns1:setResultColumnName>	
+            </ns1:foreachColumn>
+        </ns1:getRow>	
+        <ns1:getRow columnFamily="frame">
+            <ns1:key>
+                <ns1:simple>
+                    <ns1:varRef>frames</ns1:varRef>
+                </ns1:simple>
+            </ns1:key>		
+            
+            <ns1:foreachColumn>
+                <ns1:columnNameRange>
+                    <ns1:from>
+                        <ns1:simple>
+                            <ns1:varRef>pointFrom</ns1:varRef>
+                        </ns1:simple>
+                    </ns1:from>
+                    <ns1:to>
+                        <ns1:simple>
+                            <ns1:varRef>pointTo</ns1:varRef>
+                        </ns1:simple>
+                    </ns1:to>
+                </ns1:columnNameRange>
+                <ns1:setResultColumnValue>points</ns1:setResultColumnValue>
+            </ns1:foreachColumn>
+	   
+	  
+        </ns1:getRow>
+      
+    </ns1:query>  
+    <ns1:query name="getAtoms">
+        <ns1:var name="x" scope="INPUT_VAR" collectionType="SIMPLE_TYPE">
+            <cmt:standardType>LongType</cmt:standardType>
+        </ns1:var>
+        <ns1:var name="y" scope="INPUT_VAR" collectionType="SIMPLE_TYPE">
+            <cmt:standardType>LongType</cmt:standardType>
+        </ns1:var>
+        <ns1:var name="z" scope="INPUT_VAR" collectionType="SIMPLE_TYPE">
+            <cmt:standardType>LongType</cmt:standardType>
+        </ns1:var>	    
+        <ns1:var name="point" scope="OUTPUT_VAR" collectionType="TABLE_TYPE">
+            <cmt:standardType>Int32Type</cmt:standardType>
+        </ns1:var>
+        <ns1:notImplemented/>
+    </ns1:query>
+</ns1:model>
