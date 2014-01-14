@@ -7,7 +7,7 @@ package es.bsc.aeneas.core.model.util;
 import es.bsc.aeneas.core.model.gen.ClustererType;
 import es.bsc.aeneas.core.model.gen.DestType;
 import es.bsc.aeneas.core.model.gen.TransformType;
-import es.bsc.aeneas.core.model.marshalling.IntegerClusterer;
+import es.bsc.aeneas.core.model.clusterer.IntegerClusterer;
 import java.math.BigInteger;
 import org.junit.Test;
 import static org.junit.Assert.*;

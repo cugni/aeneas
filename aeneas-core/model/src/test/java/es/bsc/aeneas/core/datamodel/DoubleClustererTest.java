@@ -4,8 +4,8 @@
  */
 package es.bsc.aeneas.core.datamodel;
 
-import es.bsc.aeneas.core.datamodel.DoubleClusterer;
-import com.google.common.collect.TreeMultimap;
+ import com.google.common.collect.TreeMultimap;
+import es.bsc.aeneas.core.model.clusterer.DoubleClusterer;
 import org.junit.Before;
 import org.junit.Test;
 

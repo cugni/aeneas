@@ -5,12 +5,11 @@
 package es.bsc.aeneas.core.model.util;
 
 
-import es.bsc.aeneas.core.model.util.Clusterers;
+import es.bsc.aeneas.core.model.PointType;
 import es.bsc.aeneas.core.model.gen.StandardType;
 import es.bsc.aeneas.core.model.gen.Type;
-import es.bsc.aeneas.core.model.marshalling.DoubleClusterer;
-import es.bsc.aeneas.core.model.marshalling.PointClusterer;
-import es.bsc.aeneas.core.model.marshalling.PointType;
+import es.bsc.aeneas.core.model.clusterer.DoubleClusterer;
+import es.bsc.aeneas.core.model.clusterer.PointClusterer;
 import org.junit.*;
 
 import static org.junit.Assert.assertTrue;

@@ -4,8 +4,8 @@
  */
 package es.bsc.aeneas.core.datamodel;
 
-import es.bsc.aeneas.core.datamodel.MapPointType;
-import es.bsc.aeneas.core.datamodel.MapPointClusterer;
+import es.bsc.aeneas.core.model.MapPointType;
+import es.bsc.aeneas.core.model.clusterer.MapPointClusterer;
 import org.junit.Test;
 
 import java.util.ArrayList;

@@ -2,9 +2,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package es.bsc.aeneas.core.model.marshalling;
+package es.bsc.aeneas.core.model.clusterer;
 
-import es.bsc.aeneas.core.model.marshalling.IntegerClusterer;
 import org.junit.Test;
 
 import java.util.Arrays;

@@ -28,17 +28,15 @@ public class GenUtils {
     private static final Logger log = Logger.getLogger(GenUtils.class.getCanonicalName());
     private static final ClassLoader cl = ClassLoader.getSystemClassLoader();
     private static URL refmodel = cl.getResource(CUtils.getString("referencemodel", "referenceModel.xml"));
-    private static final URL queryModel = cl.getResource(CUtils.getString("querymodel", "queryModel.xml"));
+    // private static final URL queryModel = cl.getResource(CUtils.getString("querymodel", "queryModel.xml"));
     private static final URL refmodelXSD = cl.getResource("ReferenceModel.xsd");
-    private static final URL queryModelXSD = cl.getResource("QueryModel.xsd");
     private static final URL cassandraXSD = cl.getResource("CassandraModel.xsd");
-    private static final URL queryImlXSD = cl.getResource("QueryImplementation.xsd");
     private final static JAXBContext jc;
     private static RootType root = null;
 
     static {
         try {
-            jc = JAXBContext.newInstance("es.bsc.aeneas.model.gen");
+            jc = JAXBContext.newInstance("es.bsc.aeneas.core.model.gen");
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -332,6 +330,5 @@ public class GenUtils {
         }
     }
 
-    private GenUtils() {
-    }
+     
 }

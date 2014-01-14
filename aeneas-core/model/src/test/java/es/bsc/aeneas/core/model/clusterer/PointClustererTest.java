@@ -2,11 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package es.bsc.aeneas.core.model.marshalling;
+package es.bsc.aeneas.core.model.clusterer;
 
-import es.bsc.aeneas.core.model.marshalling.PointType;
-import es.bsc.aeneas.core.model.marshalling.PointClusterer;
+ 
 import com.google.common.collect.TreeMultimap;
+import es.bsc.aeneas.core.model.PointType;
 import org.junit.Before;
 import org.junit.Test;
 

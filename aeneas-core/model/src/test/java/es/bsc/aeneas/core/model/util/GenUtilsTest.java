@@ -7,8 +7,6 @@ package es.bsc.aeneas.core.model.util;
 import es.bsc.aeneas.core.model.gen.RootType;
 import es.bsc.aeneas.core.model.gen.StandardType;
 import es.bsc.aeneas.core.model.gen.Type;
-import es.bsc.aeneas.core.model.util.GenUtils;
-import es.bsc.aeneas.model.gen.*;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -16,6 +14,7 @@ import java.net.URL;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
+import org.junit.Before;
 
 /**
  *
@@ -26,20 +25,14 @@ public class GenUtilsTest {
     private static final Logger LOG = Logger.getLogger(GenUtilsTest.class.getName());
 
     public GenUtilsTest() {
-        GenUtils.setRefmodel("referenceModelTest");
+      
+    }
+    @Before
+    public void before(){
+          GenUtils.setRefmodel("referenceModelTest");
     }
 
-    @Test
-    public void testCastObject() {
-    }
-
-    @Test
-    public void testGetComparator() {
-    }
-
-    @Test
-    public void testGetLevelName() {
-    }
+    
 
 //    @Test
 //    public void testGetColumnName() {
@@ -94,8 +87,7 @@ public class GenUtilsTest {
 //
 //        //GenUtils.getColumnName(this, new Object[]{1,"points",2}, pm);
 //    }
-
-    @Test
+   // @Test
     public void testGetKey() {
         /*
          * ColumnFamilyType columnFamily =new columnFamilyType(); ColumnType
@@ -109,17 +101,17 @@ public class GenUtilsTest {
          */
     }
 
-    @Test
-    public void testGetQueryImplementationFile() throws IOException {
-        URL queryImplementationFile = GenUtils.getQueryImplementationFile("test");
-        
-        assertTrue(queryImplementationFile.openStream().available()>0);
-
-    }
+//    @Test
+//    public void testGetQueryImplementationFile() throws IOException {
+//        URL queryImplementationFile = GenUtils.getQueryImplementationFile("test");
+//
+//        assertTrue(queryImplementationFile.openStream().available() > 0);
+//
+//    }
 
     public void testGetCassandraModelFile() throws IOException {
         URL cassandraModelFile = GenUtils.getCassandraModelFile("test1");
-        assertTrue(cassandraModelFile.openStream().available()>0);
+        assertTrue(cassandraModelFile.openStream().available() > 0);
     }
 
 //    @Test
@@ -144,7 +136,6 @@ public class GenUtilsTest {
 //        assertNotNull(q);
 //        assertTrue(q.getQuery().size() > 0);
 //    }
-
     @Test
     public void testGetReferenceModel() {
         RootType r = GenUtils.getReferenceModel();

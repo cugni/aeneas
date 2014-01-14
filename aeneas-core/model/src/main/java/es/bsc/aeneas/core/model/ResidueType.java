@@ -1,4 +1,4 @@
-package es.bsc.aeneas.core.model.marshalling;
+package es.bsc.aeneas.core.model;
 
 import java.io.Serializable;
 import java.util.HashMap;

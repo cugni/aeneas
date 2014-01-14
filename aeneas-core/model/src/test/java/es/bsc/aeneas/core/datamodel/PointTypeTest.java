@@ -4,8 +4,9 @@
  */
 package es.bsc.aeneas.core.datamodel;
 
-import es.bsc.aeneas.core.datamodel.PointType;
-import es.bsc.aeneas.core.datamodel.PointClusterer;
+ 
+import es.bsc.aeneas.core.model.PointType;
+import es.bsc.aeneas.core.model.clusterer.PointClusterer;
 import org.junit.Test;
 
 import java.util.ArrayList;

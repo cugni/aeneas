@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tns:root xmlns:tns="http://cassamdrabm.bsc.es/ReferenceModel"
+<tns:root xmlns:tns="http://aeneas.bsc.es/ReferenceModel"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xmlns:cmt="http://cassamdrabm.bsc.es/CommonTypes"
-          xsi:schemaLocation="http://cassamdrabm.bsc.es/ReferenceModel ../src/main/resources/ReferenceModel.xsd">
+          xmlns:cmt="http://aeneas.bsc.es/CommonTypes"
+          xsi:schemaLocation="http://aeneas.bsc.es/ReferenceModel ../../main/resources/ReferenceModel.xsd">
     <tns:entity name="frame" >
         <tns:keyType>Int32Type</tns:keyType>
         <tns:value>

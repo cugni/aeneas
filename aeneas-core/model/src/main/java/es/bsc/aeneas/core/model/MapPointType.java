@@ -1,4 +1,4 @@
-package es.bsc.aeneas.core.datamodel;
+package es.bsc.aeneas.core.model;
 
 import java.io.Serializable;
 

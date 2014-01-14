@@ -7,7 +7,7 @@ package es.bsc.aeneas.core.model.util;
 import com.google.common.base.CaseFormat;
 import es.bsc.aeneas.core.model.gen.StandardType;
 import es.bsc.aeneas.core.model.gen.Type;
-import es.bsc.aeneas.core.model.marshalling.TypeClusterer;
+import es.bsc.aeneas.core.model.clusterer.TypeClusterer;
 
 import java.util.logging.Logger;
 
@@ -30,7 +30,7 @@ public class Clusterers {
         } else {
             String className = type.getCustomType().subSequence(0, type.getCustomType().length() - 4)
                     + "Clusterer";
-            s = getClustererByClassName(className);
+            s = getClustererByClassName(className.replaceAll(".+\\.", "es.bsc.aeneas.core.model.clusterer."));
 
         }
         return s;
@@ -39,7 +39,7 @@ public class Clusterers {
     private static TypeClusterer<?> getClusterer(StandardType standardType) {
         TypeClusterer s;
 
-        String className = "es.bsc.aeneas.model.marshalling."
+        String className = "es.bsc.aeneas.core.model.clusterer."
                 + standardType.value().subSequence(0, standardType.value().length() - 4) //it removes the "Type" suffix
                 + "Clusterer";
         s = checkNotNull(getClustererByClassName(className));
@@ -64,7 +64,7 @@ public class Clusterers {
         int tpos = sn.lastIndexOf("Type");
         String tname = ((tpos == -1) ? sn.toString() : sn.subSequence(0, tpos).toString());
         tname = CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, tname);
-        String className = "es.bsc.aeneas.model.marshalling."
+        String className = "es.bsc.aeneas.core.model.clusterer."
                 + tname//it removes the "Type" suffix
                 + "Clusterer";
         s = checkNotNull(getClustererByClassName(className));

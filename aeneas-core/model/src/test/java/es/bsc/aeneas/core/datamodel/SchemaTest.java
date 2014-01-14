@@ -19,19 +19,19 @@ import org.xml.sax.SAXException;
  */
 public class SchemaTest {
 
-    @Test
+    //@Test
     public void SchemaTest() throws Exception {
-        JAXBContext jc = JAXBContext.newInstance("es.bsc.aeneas.model.gen");
+        JAXBContext jc = JAXBContext.newInstance("es.bsc.aeneas.core.model.gen");
 //            checkArgument(queryModel.exists(), "queryModel not found. {0}", queryModel.getAbsolutePath());
         Unmarshaller um = jc.createUnmarshaller();
         SchemaFactory sf = SchemaFactory.newInstance(
                 javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
         um.setSchema(sf.newSchema(this.getClass().getResource("/MatchingModel.xsd")));
-        um.setProperty( XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES,false);
-        um.setProperty( XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES,false);
+//        um.setProperty( XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES,false);
+//        um.setProperty( XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES,false);
         @SuppressWarnings("unchecked")
         JAXBElement< ClusterType> jk =
-                (JAXBElement<ClusterType>) um.unmarshal(this.getClass().getResource("/NewCassandra.xml"));
+                (JAXBElement<ClusterType>) um.unmarshal(this.getClass().getResource("/TestXML.xml"));
         jk.getValue();
 
 

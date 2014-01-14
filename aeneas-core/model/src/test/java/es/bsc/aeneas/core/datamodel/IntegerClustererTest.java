@@ -4,7 +4,7 @@
  */
 package es.bsc.aeneas.core.datamodel;
 
-import es.bsc.aeneas.core.datamodel.IntegerClusterer;
+import es.bsc.aeneas.core.model.clusterer.IntegerClusterer;
 import org.junit.Test;
 
 import java.util.Arrays;

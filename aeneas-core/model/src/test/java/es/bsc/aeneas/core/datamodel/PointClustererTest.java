@@ -4,9 +4,10 @@
  */
 package es.bsc.aeneas.core.datamodel;
 
-import es.bsc.aeneas.core.datamodel.PointType;
-import es.bsc.aeneas.core.datamodel.PointClusterer;
+ 
+import es.bsc.aeneas.core.model.PointType;
 import com.google.common.collect.TreeMultimap;
+import es.bsc.aeneas.core.model.clusterer.PointClusterer;
 import org.junit.Before;
 import org.junit.Test;
 
