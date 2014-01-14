@@ -4,10 +4,10 @@ import com.yammer.metrics.Metrics;
 import com.yammer.metrics.core.Gauge;
 import es.bsc.aeneas.core.loader.DBSetter;
 import es.bsc.aeneas.core.loader.SourceReader;
-import es.bsc.aeneas.core.loader.exceptions.InvalidAddRequest;
-import es.bsc.aeneas.core.loader.exceptions.InvalidPutRequest;
-import es.bsc.aeneas.core.loader.exceptions.PatternException;
-import es.bsc.aeneas.core.loader.exceptions.SourceReadingException;
+import es.bsc.aeneas.core.rosetta.exceptions.InvalidAddRequest;
+import es.bsc.aeneas.core.rosetta.exceptions.InvalidPutRequest;
+import es.bsc.aeneas.core.rosetta.exceptions.PatternException;
+import es.bsc.aeneas.core.rosetta.exceptions.SourceReadingException;
 import es.bsc.aeneas.model.marshalling.BoxType;
 import es.bsc.aeneas.core.model.marshalling.PointType;
 

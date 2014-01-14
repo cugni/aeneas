@@ -8,6 +8,7 @@ import es.bsc.aeneas.core.model.gen.ClustererType;
 import es.bsc.aeneas.core.model.gen.DestType;
 import es.bsc.aeneas.core.model.gen.TransformType;
 import es.bsc.aeneas.core.model.clusterer.TypeClusterer;
+import es.bsc.aeneas.core.model.gen.LevelType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,6 +49,7 @@ public class TrasformerUtil {
         return res;
 
     }
+      
 
     private static class THolder {
 

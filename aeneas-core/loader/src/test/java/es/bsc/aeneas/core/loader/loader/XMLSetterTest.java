@@ -1,8 +1,8 @@
 package es.bsc.aeneas.core.loader.loader;
 
-import es.bsc.aeneas.core.loader.Loader;
-import es.bsc.aeneas.core.loader.XMLCassandraSetter;
-import es.bsc.aeneas.core.loader.exceptions.UnreachableClusterException;
+import es.bsc.aeneas.cassandra.translator.Loader;
+import es.bsc.aeneas.cassandra.translator.XMLCassandraSetter;
+import es.bsc.aeneas.core.rosetta.exceptions.UnreachableClusterException;
 import me.prettyprint.cassandra.model.BasicColumnDefinition;
 import me.prettyprint.cassandra.service.ThriftKsDef;
 import me.prettyprint.hector.api.beans.DynamicComposite;

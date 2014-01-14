@@ -4,7 +4,7 @@
  */
 package es.bsc.aeneas.core.loader.examples;
 
-import es.bsc.aeneas.core.loader.Loader;
+import es.bsc.aeneas.cassandra.translator.Loader;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.DynamicCompositeSerializer;
 import me.prettyprint.cassandra.serializers.IntegerSerializer;

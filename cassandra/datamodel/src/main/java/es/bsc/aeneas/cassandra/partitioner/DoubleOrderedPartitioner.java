@@ -5,7 +5,7 @@
 package es.bsc.aeneas.cassandra.partitioner;
 
 import es.bsc.aeneas.commons.CUtils;
-import org.apache.cassandra.config.CFMetaData;
+ import org.apache.cassandra.config.CFMetaData;
 import org.apache.cassandra.config.ConfigurationException;
 import org.apache.cassandra.config.DatabaseDescriptor;
 import org.apache.cassandra.config.Schema;

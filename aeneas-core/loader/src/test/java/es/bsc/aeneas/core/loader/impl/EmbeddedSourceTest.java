@@ -5,8 +5,8 @@
 package es.bsc.aeneas.core.loader.impl;
 
 import es.bsc.aeneas.core.loader.DBSetter;
-import es.bsc.aeneas.core.loader.exceptions.InvalidPutRequest;
-import es.bsc.aeneas.core.loader.exceptions.UnreachableClusterException;
+import es.bsc.aeneas.core.rosetta.exceptions.InvalidPutRequest;
+import es.bsc.aeneas.core.rosetta.exceptions.UnreachableClusterException;
 import org.apache.commons.configuration.Configuration;
 import org.junit.BeforeClass;
 import org.junit.Test;

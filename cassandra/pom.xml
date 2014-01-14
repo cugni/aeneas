@@ -10,6 +10,7 @@
       <module>datamodel</module>
       <module>metrics-recorder</module>
       <module>mapping</module>
+    <module>translator</module>
   </modules>
   <groupId>es.bsc.aeneas.cassandra</groupId>
   <artifactId>ae-cassandra</artifactId>

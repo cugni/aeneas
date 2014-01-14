@@ -4,7 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import es.bsc.aeneas.cassandrametricsrecorder.MetricspaceHolder;
 import es.bsc.aeneas.cassandrametricsrecorder.MetricspaceHolder.MetricContext;
 import es.bsc.aeneas.core.loader.DBSetter;
-import es.bsc.aeneas.core.loader.exceptions.UnreachableClusterException;
+import es.bsc.aeneas.core.rosetta.exceptions.UnreachableClusterException;
 import es.bsc.aeneas.core.nodeagent.Metric;
 import es.bsc.aeneas.core.nodeagent.Recorder;
 import java.util.Collection;

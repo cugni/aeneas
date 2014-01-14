@@ -1,6 +1,6 @@
 package es.bsc.aeneas.core.loader;
 
-import es.bsc.aeneas.core.loader.exceptions.UnreachableClusterException;
+import es.bsc.aeneas.core.rosetta.exceptions.UnreachableClusterException;
 
 
 public interface DBSource {

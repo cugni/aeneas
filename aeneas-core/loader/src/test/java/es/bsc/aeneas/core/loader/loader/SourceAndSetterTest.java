@@ -1,14 +1,14 @@
 package es.bsc.aeneas.core.loader.loader;
 
 
-import es.bsc.aeneas.core.loader.Loader;
+import es.bsc.aeneas.cassandra.translator.Loader;
 import es.bsc.aeneas.core.loader.SourceReader;
-import es.bsc.aeneas.core.loader.XMLCassandraSetter;
-import es.bsc.aeneas.core.loader.AbstractCassandraDB;
+import es.bsc.aeneas.cassandra.translator.XMLCassandraSetter;
+import es.bsc.aeneas.cassandra.translator.AbstractCassandraDB;
 import es.bsc.aeneas.core.loader.IOTestDB;
 import es.bsc.aeneas.core.loader.DBSetter;
-import es.bsc.aeneas.core.loader.exceptions.InvalidPutRequest;
-import es.bsc.aeneas.core.loader.exceptions.UnreachableClusterException;
+import es.bsc.aeneas.core.rosetta.exceptions.InvalidPutRequest;
+import es.bsc.aeneas.core.rosetta.exceptions.UnreachableClusterException;
 import es.bsc.aeneas.core.loader.impl.EmbeddedSource;
 import es.bsc.aeneas.model.marshalling.BoxType;
 import es.bsc.aeneas.core.model.marshalling.PointType;

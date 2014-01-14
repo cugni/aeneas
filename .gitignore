@@ -4,3 +4,15 @@
 /cassandra/datamodel/target/
 /cassandra/metrics-recorder/target/
 /cassandra/mapping/target/
+/core/code-generator/target/
+/core/commons/target/
+/core/loader/target/
+/core/model/target/
+/core/workloader/target/
+/aeneas-core/code-generator/target/
+/aeneas-core/commons/target/
+/aeneas-core/loader/target/
+/aeneas-core/model/target/
+/aeneas-core/workloader/target/
+/cassandra/translator/target/
+/aeneas-core/rosetta/target/

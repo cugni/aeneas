@@ -1,6 +1,6 @@
 package es.bsc.aeneas.core.loader;
 
-import es.bsc.aeneas.core.loader.exceptions.InvalidPutRequest;
+import es.bsc.aeneas.core.rosetta.exceptions.InvalidPutRequest;
 import org.apache.commons.configuration.Configuration;
 /*
  * This interface provide an generic Api for

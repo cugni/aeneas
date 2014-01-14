@@ -4,7 +4,9 @@
  */
 package es.bsc.aeneas.core.loader;
 
- import es.bsc.aeneas.core.loader.exceptions.UnreachableClusterException;
+import es.bsc.aeneas.cassandra.translator.Loader;
+import es.bsc.aeneas.cassandra.translator.XMLCassandraSetter;
+ import es.bsc.aeneas.core.rosetta.exceptions.UnreachableClusterException;
 
  import java.io.File;
  import java.io.PrintStream;

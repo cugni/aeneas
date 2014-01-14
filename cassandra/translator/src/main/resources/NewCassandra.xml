@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<env   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+           xmlns:cm='http://aeneas.bsc.es/CassandraModel'
+           xmlns='http://aeneas.bsc.es/MatchingModel'
+           xsi:schemaLocation='http://aeneas.bsc.es/CassandraModel  CassandraModel.xsd' >
+ 
+    <cluster xsi:type="cm:CassandraClusterType" name="prova" address="prova" >
+        <settings xsi:type="cm:CassandraSettings">
+            <cm:keyspaces>
+                <cm:keyspace name="">
+                    <cm:strategy>SimpleStrategy</cm:strategy>
+                    <cm:replicationFactor>1</cm:replicationFactor>
+                    <cm:columnFamilies >
+                        <cm:columnFamily name="prova">
+                            <cm:consistency>ALL</cm:consistency>
+                            <cm:keyCacheSize>21</cm:keyCacheSize>
+                            <cm:keyCachePeriod>122</cm:keyCachePeriod>
+                            <cm:rowCacheSize>123</cm:rowCacheSize>
+                            <cm:rowCachePeriod>123</cm:rowCachePeriod>
+                            
+                        </cm:columnFamily>
+                    </cm:columnFamilies>
+                </cm:keyspace>
+            </cm:keyspaces>
+        </settings>
+        <matches>
+            <match xsi:type="cm:CassandraMatchType"  crudType="CREATE_OR_UPDATE" columnFamilyName="">
+                <refPath>
+                    <level name="luno">
+                        <dest xsi:type="cm:CassandraDestType" where="KEY"  position="0" />
+                    </level>
+                    <level name="secondLevel">
+                        <dest xsi:type="cm:CassandraDestType" where="KEY" position="1" />
+                        
+                    </level>
+                </refPath>
+            </match>
+        </matches>
+    </cluster>
+</env>

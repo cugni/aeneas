@@ -296,22 +296,17 @@ public class GenUtils {
      * @param cla
      * @return The Aeneas' type
      */
-//    public static Type getTypeFromClass(Class<?> cla) {
-//        if (cla.equals(DynamicComposite.class)) {
-//            Type t = new Type();
-//            t.setStandardType(StandardType.ANY_TYPE);
-//            return t;
-//        }
-//        StandardType st = getStandardTypeFromClass(cla);
-//        Type t = new Type();
-//        if (st != null) {
-//            t.setStandardType(st);
-//            return t;
-//        } else {
-//            t.setCustomType(cla.getCanonicalName());
-//            return t;
-//        }
-//    }
+    public static Type getTypeFromClass(Class<?> cla) {
+        StandardType st = getStandardTypeFromClass(cla);
+        Type t = new Type();
+        if (st != null) {
+            t.setStandardType(st);
+            return t;
+        } else {
+            t.setCustomType(cla.getCanonicalName());
+            return t;
+        }
+    }
     public static StandardType getStandardTypeFromClass(Class<?> cla) {
         if (checkNotNull(cla).equals(String.class)) {
             return StandardType.UTF_8_TYPE;
