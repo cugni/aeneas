@@ -23,11 +23,13 @@ import java.util.logging.Logger;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import es.bsc.aeneas.cassandra.serializers.Serializers;
+import es.bsc.aeneas.cassandra.translator.TrUtils;
 import es.bsc.aeneas.core.model.gen.CassandraDestType;
 import es.bsc.aeneas.core.model.gen.CassandraDestTypes;
 import es.bsc.aeneas.core.model.gen.CassandraMatchType;
 import es.bsc.aeneas.core.model.gen.DestType;
 import es.bsc.aeneas.core.model.gen.EntityType;
+import es.bsc.aeneas.core.model.gen.FixedDest;
 import es.bsc.aeneas.core.model.gen.FixedType;
 import es.bsc.aeneas.core.model.gen.LevelType;
 import es.bsc.aeneas.core.model.gen.NamedType;
@@ -59,23 +61,6 @@ public class Col {
     private ImmutableList<Type> keyTypes = null;
     private ImmutableList<Type> columnNameTypes = null;
     private ImmutableList<Type> valueTypes = null;
-    /*
-     * If the value compose the key it gives its position, otherwise return -1.
-     *
-     */
-    public final int valueKeyPosition;
-    /*
-     * If the value compose the Column Name it gives its position, otherwise
-     * return -1.
-     *
-     */
-    public final int valueCNPosition;
-    /*
-     * If the value compose the Value it gives its position, otherwise return
-     * -1.
-     *
-     */
-    public final int valueCVPosition;
     /*
      * Return the column metadata definition. If the column is composed is for a
      * variable column name return null
@@ -112,9 +97,9 @@ public class Col {
                     break;
                 }
             }
-            List<CassandraDestType> dcolumns = selectDest(l, CassandraDestTypes.COLUMN_NAME);
-            List<CassandraDestType> dkeys = selectDest(l, CassandraDestTypes.KEY);
-            List<CassandraDestType> dvalues = selectDest(l, CassandraDestTypes.VALUE);
+            List<CassandraDestType> dcolumns = selectDest(l.getDest(), CassandraDestTypes.COLUMN_NAME);
+            List<CassandraDestType> dkeys = selectDest(l.getDest(), CassandraDestTypes.KEY);
+            List<CassandraDestType> dvalues = selectDest(l.getDest(), CassandraDestTypes.VALUE);
             if (!dcolumns.isEmpty()) {
                 for (CassandraDestType cd : dcolumns) {
                     Tr t = new Tr(cd, wr(st));
@@ -141,6 +126,18 @@ public class Col {
         }
         tmap = tmapb.build();
         //*adding the fixed types
+        //*adding the fixed types
+        /**
+         * *
+         * TODO: Now that the new fixed values are way more extensible, how to
+         * handle them?
+         */
+        if (!ct.getFixedDests().getFixedDest().isEmpty()) {
+            FixedColumnName f = ct.getFixedColumnName();
+            colb.put(f.getPosition(), new Lev(f.getName(), wr(f.getStandardType())));
+
+        }
+
 
 
 
@@ -171,10 +168,6 @@ public class Col {
         checkArgument(keyb.lastKey().equals(keyb.size() - 1), "The number position of the keys must be consegutive");
         checkArgument(colb.firstKey().equals(0), "The column position must starts from 0");
         checkArgument(colb.lastKey().equals(colb.size() - 1), "The number position of the columns must be consegutive");
-        if (!isValueless()) {
-            checkArgument(valb.firstKey().equals(0), "The value position must starts from 0");
-            checkArgument(valb.lastKey().equals(valb.size() - 1), "The number position of the values must be consegutive");
-        }
         keys = ImmutableList.copyOf(keyb.values());
         cols = ImmutableList.copyOf(colb.values());
         vals = ImmutableList.copyOf(valb.values());
@@ -214,9 +207,23 @@ public class Col {
         return valueSerialiser;
     }
 
-    List<CassandraDestType> selectDest(LevelType l, CassandraDestTypes type) {
+    List<FixedDest> selectFixedDest(List<FixedDest> l, CassandraDestTypes type) {
+        List<FixedDest> ret = new ArrayList();
+        for (FixedDest dt : l) {
+            CassandraDestType cdt = (CassandraDestType) dt.getDest();
+            if (cdt.getWhere().equals(type.value())) {
+                ret.add(dt);
+            }
+
+        }
+
+        return ret;
+
+    }
+
+    List<CassandraDestType> selectDest(List<DestType> l, CassandraDestTypes type) {
         List<CassandraDestType> ret = new ArrayList();
-        for (DestType dt : l.getDest()) {
+        for (DestType dt : l) {
             CassandraDestType cdt = (CassandraDestType) dt;
             if (cdt.getWhere().equals(type.value())) {
                 ret.add(cdt);
@@ -275,37 +282,52 @@ public class Col {
 
     }
 
-    public List<FixedType> getFixedRowKey() {
-        return checkNotNull(fixedRowType, "Invalid request on a not fixed row column").getKey();
-    }
-
     ColumnDefinition getColumnDefinition() {
-        NamedType fixedColumnName = ct.getFixedColumnName();
+        List<FixedDest> fixedDest = ct.getFixedDests().getFixedDest();
 
-        if (fixedColumnName == null) {
+        if (fixedDest.isEmpty()) {
             return null;
         }
         BasicColumnDefinition c = new BasicColumnDefinition();
         log.log(Level.INFO, "column: {0}", name);
         //it checks if the column name is fixed or
 
+        List<FixedDest> fixedColumns = selectFixedDest(fixedDest,
+                CassandraDestTypes.COLUMN_NAME);
+
+
 
         switch (cf.columnSort) {
-            case COMPOSITE:
-                Object ob = GenUtils.castObject(fixedColumnName.getName(), fixedColumnName.getStandardType());
-                log.log(Level.INFO, "Column name: composite name made by {0}", ob);
-                c.setName(new Composite(ob).serialize());
-                break;
-            case DYNAMIC:
-                Object ob2 = GenUtils.castObject(fixedColumnName.getName(), fixedColumnName.getStandardType());
-                log.log(Level.INFO, "Column name: dynamic composite name made by {0}", ob2);
-                c.setName(new DynamicComposite(ob2).serialize());
-                break;
+            case COMPOSITE: {
+                Composite com = new Composite();
+                for (FixedDest fd : fixedColumns) {
+
+                    Object ob = GenUtils.castObject(fd.getFixedValue(), fd.getFixedValueType());
+                    log.log(Level.INFO, "Column name: composite name made by {0}", ob);
+                    com.add(ob);
+                }
+                c.setName(com.serialize());
+            }
+            break;
+            case DYNAMIC: {
+                DynamicComposite com = new DynamicComposite();
+                for (FixedDest fd : fixedColumns) {
+                    Object ob = GenUtils.castObject(fd.getFixedValue(), fd.getFixedValueType());
+                    log.log(Level.INFO, "Column name: dynamic composite name made by {0}", ob);
+
+                    com.add(ob);
+                }
+                c.setName(com.serialize());
+            }
+            break;
             default:
                 //simple
-                Serializer s = Serializers.getSerializer(fixedColumnName.getStandardType());
-                c.setName(s.toByteBuffer(fixedColumnName.getName()));
-                log.log(Level.INFO, "Column name: simple name with the value {0}", fixedColumnName.getName());
+                checkArgument(fixedColumns.size() == 1,
+                        "For a single matching with a simple column types you must have only one fixed value for the column ");
+                FixedDest fc = fixedColumns.get(0);
+                Serializer s = Serializers.getSerializer(fc.getFixedValueType());
+                c.setName(s.toByteBuffer(fc.getFixedValue()));
+                log.log(Level.INFO, "Column name: simple name with the value {0}", fc.getFixedValue());
         }
         //validator for the value
 
@@ -313,11 +335,11 @@ public class Col {
             c.setValidationClass(ComparatorType.BYTESTYPE.getClassName());
         } else if (valueTypes.size() == 1) {
 
-            c.setValidationClass(GenUtils.getComparator(valueTypes.get(0)).getClassName());
+            c.setValidationClass(TrUtils.getComparator(valueTypes.get(0)).getClassName());
 
 
         } else {
-            c.setValidationClass(GenUtils.getCompositeDefinition(valueTypes));
+            c.setValidationClass(TrUtils.getCompositeDefinition(valueTypes));
         }
         log.log(Level.INFO, "Column value: set validator {0}", c.getValidationClass());
         if (ct.isIndex()) {

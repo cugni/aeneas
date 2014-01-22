@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import es.bsc.aeneas.cassandra.serializers.Serializers;
+import es.bsc.aeneas.cassandra.translator.TrUtils;
 
 /**
  *
@@ -139,7 +140,7 @@ public class CF {
             //setting the comparatator
             switch (columnSort) {
                 case SINGLE:
-                    comparator = GenUtils.getComparator(lst.iterator().next());
+                    comparator = TrUtils.getComparator(lst.iterator().next());
                     comparatorAlias = "";
                     columnNameS = Serializers.getSerializer(lst.iterator().next());
                     columnNameType = GenUtils.getClass(lst.iterator().next());
@@ -157,7 +158,7 @@ public class CF {
                     StringBuilder sb = new StringBuilder(20);
                     sb.append("(");
                     for (Type t : columns.get(0).getColumnNameTypes()) {
-                        sb.append(GenUtils.getComparator(t).getTypeName()).append(",");
+                        sb.append(TrUtils.getComparator(t).getTypeName()).append(",");
                     }
                     sb.deleteCharAt(sb.length() - 1).append(")");
                     comparatorAlias = sb.toString();
@@ -176,10 +177,7 @@ public class CF {
             for (Col c : columns) {
                 if (c.getKeyTypes().size() > 1) {
                     multi = true;
-                } else {
-                    checkArgument(c.isFixedRow() || c.getKeyTypes().size() == 1,
-                            "Wrong column definition: Undefined the matching key-value to level");
-                }
+                } 
             }
             if (multi) {
                 //Check if composite or dynamic composite
@@ -214,7 +212,7 @@ public class CF {
                         types.add(nt.type);
                     }
                     keyTypes = ImmutableList.copyOf(types);
-                    keyValidationClass = GenUtils.getCompositeDefinition(keyTypes);
+                    keyValidationClass = TrUtils.getCompositeDefinition(keyTypes);
                     keySingleType = null;
                 }
             } else {
@@ -248,7 +246,7 @@ public class CF {
                     keyTypes = null;
                     keyType = KeyType.SINGLE_KEY;
                     keyserializer = Serializers.getSerializer(t.get(0));
-                    keyValidationClass = GenUtils.getComparator(t.get(0)).getTypeName();
+                    keyValidationClass = TrUtils.getComparator(t.get(0)).getTypeName();
                     keySingleType = t.get(0);
                 }
                 log.log(Level.INFO, "CF:{0} keyType:{1},keyValidationClass:{2},",

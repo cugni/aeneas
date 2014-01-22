@@ -72,6 +72,7 @@
             <extension base="mm:MatchType">
                 <attribute name="columnFamilyName" type="string"></attribute>
                 <attribute name="keyspaceName" type="string"></attribute>
+                 <attribute name="index" type="boolean" default="false"></attribute>
             </extension>
         </complexContent>
         
@@ -96,7 +97,7 @@
         </complexContent>      
     </complexType>  
     
-   <complexType name="RDestType">
+   <complexType name="RDestType" abstract="true">
         <complexContent>
             <restriction base="mm:DestType"> 
                <attribute name="where" type="tns:CassandraDestTypes" use="required"></attribute>

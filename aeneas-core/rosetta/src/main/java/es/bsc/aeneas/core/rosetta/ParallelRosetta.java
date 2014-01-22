@@ -1,5 +1,6 @@
 package es.bsc.aeneas.core.rosetta;
 
+import es.bsc.aeneas.core.rosetta.exceptions.TimeoutException;
 import es.bsc.aeneas.core.model.gen.ClusterType;
 import javax.inject.Inject;
 

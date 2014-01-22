@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<env   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
-           xmlns:cm='http://aeneas.bsc.es/CassandraModel'
-           xmlns='http://aeneas.bsc.es/MatchingModel'
-           xsi:schemaLocation='http://aeneas.bsc.es/CassandraModel  CassandraModel.xsd' >
+<mm:env   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+          xmlns:cm='http://aeneas.bsc.es/CassandraModel'
+          xmlns:mm='http://aeneas.bsc.es/MatchingModel'
+          xsi:schemaLocation="http://aeneas.bsc.es/MatchingModel ../../../../../aeneas-core/model/src/main/resources/MatchingModel.xsd http://aeneas.bsc.es/CassandraModel  CassandraModel.xsd">
  
-    <cluster xsi:type="cm:CassandraClusterType" name="prova" address="prova" >
-        <settings xsi:type="cm:CassandraSettings">
+    <mm:cluster xsi:type="cm:CassandraClusterType" name="prova" address="prova" >
+        <mm:settings xsi:type="cm:CassandraSettings">
             <cm:keyspaces>
                 <cm:keyspace name="">
                     <cm:strategy>SimpleStrategy</cm:strategy>
@@ -22,19 +22,23 @@
                     </cm:columnFamilies>
                 </cm:keyspace>
             </cm:keyspaces>
-        </settings>
-        <matches>
-            <match xsi:type="cm:CassandraMatchType"  crudType="CREATE_OR_UPDATE" columnFamilyName="">
-                <refPath>
-                    <level name="luno">
-                        <dest xsi:type="cm:CassandraDestType" where="KEY"  position="0" />
-                    </level>
-                    <level name="secondLevel">
-                        <dest xsi:type="cm:CassandraDestType" where="KEY" position="1" />
-                        
-                    </level>
-                </refPath>
-            </match>
-        </matches>
-    </cluster>
-</env>
+        </mm:settings>
+        <mm:matches> 
+            <mm:match xsi:type="cm:CassandraMatchType"  crudType="CREATE_OR_UPDATE" columnFamilyName="">
+                <mm:fixedDests>
+                    <mm:fixedDest  fixedValue="ciao" >
+                        <mm:dest  xsi:type="cm:CassandraDestType"  where="COLUMN_NAME" position="0"/>
+                     </mm:fixedDest>
+                </mm:fixedDests>  
+                <mm:refPath>
+                    <mm:level name="luno">
+                        <mm:dest xsi:type="cm:CassandraDestType" where="KEY"  position="0" />
+                    </mm:level>
+                    <mm:level name="secondLevel">
+                        <mm:dest xsi:type="cm:CassandraDestType" where="KEY" position="1" />
+                     </mm:level>
+                 </mm:refPath>
+             </mm:match>
+          </mm:matches>
+    </mm:cluster>
+</mm:env>
