@@ -5,7 +5,9 @@
 package es.bsc.aeneas.cassandra.mapping;
 
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Table;
+import es.bsc.aeneas.cassandra.translator.Loader;
 import es.bsc.aeneas.core.model.gen.CassandraClusterType;
 import es.bsc.aeneas.core.model.gen.CassandraMatchType;
 import es.bsc.aeneas.core.model.gen.CassandraSettings;
@@ -14,9 +16,13 @@ import es.bsc.aeneas.core.model.gen.KeyspaceType;
 import es.bsc.aeneas.core.model.gen.KeyspaceType.ColumnFamilies;
 import es.bsc.aeneas.core.model.gen.MatchType;
 import es.bsc.aeneas.core.model.gen.StrategyType;
+import es.bsc.aeneas.core.rosetta.exceptions.UnreachableClusterException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
+import me.prettyprint.hector.api.Cluster;
+import me.prettyprint.hector.api.ddl.KeyspaceDefinition;
 import org.apache.commons.configuration.Configuration;
 
 /**
@@ -27,11 +33,19 @@ public class Cassa {
 
     @Inject
     Configuration conf;
-    private List<Ks> keyspaces=new ArrayList();
+    private List<Ks> keyspaces = new ArrayList();
+    private final Map<String, Col> matches;
+    public final Cluster cluster;
 
     public Cassa(CassandraClusterType cct) {
+        try {
+            cluster = Loader.getInstance().configureCluster(cct.getName(),
+                    cct.getAddress());
+        } catch (UnreachableClusterException ex) {
+            throw new IllegalStateException("Impossible to init", ex);
+        }
         Table<String, String, Reorder> reorder = HashBasedTable.create();
-        List<MatchType> matches = cct.getMatches().getMatch();
+        List<MatchType> ms = cct.getMatches().getMatch();
         CassandraSettings settings = (CassandraSettings) cct.getSettings();
         for (KeyspaceType kt : settings.getKeyspaces().getKeyspace()) {
             for (ColumnFamilyType cf : kt.getColumnFamilies().getColumnFamily()) {
@@ -41,7 +55,7 @@ public class Cassa {
                 reorder.put(kt.getName(), cf.getName(), r);
             }
         }
-        for (MatchType match : matches) {
+        for (MatchType match : ms) {
             CassandraMatchType cmatch = (CassandraMatchType) match;
             String kname = cmatch.getKeyspaceName();
             String cfname = cmatch.getColumnFamilyName();
@@ -61,13 +75,33 @@ public class Cassa {
             }
             reorder.get(kname, cfname).matches.add(cmatch);
         }
-        for(String ksname:reorder.rowKeySet()){
-            
-            keyspaces.add(new Ks(reorder.row(ksname)));
+        ImmutableMap.Builder<String, Col> b = ImmutableMap.builder();
+        for (String ksname : reorder.rowKeySet()) {
+            Ks ks = new Ks(this,reorder.row(ksname));
+            keyspaces.add(ks);
+            for (CF cf : ks.cfs) {
+                for (Col col : cf.columns) {
+                    b.put(col.id, col);
+                }
+            }
+
         }
+        matches = b.build();
+
+
 
 
     }
 
-    
+    public Col getMatch(String id) {
+        return matches.get(id);
+    }
+
+    public List<KeyspaceDefinition> createKeyspaceDefinitions() {
+        List<KeyspaceDefinition> list = new ArrayList();
+        for (Ks k : keyspaces) {
+            list.add(k.createKeyspaceDefinition());
+        }
+        return list;
+    }
 }

@@ -1,9 +1,9 @@
 package es.bsc.aeneas.cassandra.mapping;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableTable;
 
 import me.prettyprint.cassandra.model.BasicColumnDefinition;
 import me.prettyprint.cassandra.serializers.CompositeSerializer;
@@ -20,7 +20,6 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import es.bsc.aeneas.cassandra.serializers.Serializers;
 import es.bsc.aeneas.cassandra.translator.TrUtils;
@@ -30,15 +29,20 @@ import es.bsc.aeneas.core.model.gen.CassandraMatchType;
 import es.bsc.aeneas.core.model.gen.DestType;
 import es.bsc.aeneas.core.model.gen.EntityType;
 import es.bsc.aeneas.core.model.gen.FixedDest;
-import es.bsc.aeneas.core.model.gen.FixedType;
 import es.bsc.aeneas.core.model.gen.LevelType;
-import es.bsc.aeneas.core.model.gen.NamedType;
 import es.bsc.aeneas.core.model.gen.RefPathType;
 import es.bsc.aeneas.core.model.gen.RootType;
 import es.bsc.aeneas.core.model.gen.StandardType;
 import es.bsc.aeneas.core.model.gen.Type;
 import es.bsc.aeneas.core.model.util.GenUtils;
+import es.bsc.aeneas.core.model.util.TransformerUtil;
+import es.bsc.aeneas.core.rosetta.Mapping;
 import java.util.ArrayList;
+import java.util.Collection;
+import me.prettyprint.cassandra.serializers.StringSerializer;
+import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
+import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
+import me.prettyprint.hector.api.beans.AbstractComposite;
 
 /**
  * List.
@@ -48,14 +52,13 @@ import java.util.ArrayList;
 public class Col {
 
     private final static Logger log = Logger.getLogger(Col.class.getName());
-    public final String name;
+    public final String id;
     public final CF cf;
     public final ValueType valueType;
     final ImmutableList< Lev> keys;
     final ImmutableList< Lev> cols;
     final ImmutableList< Lev> vals;
-    final ImmutableTable<LevelType, DestType, Tr> tmap;
-    final ImmutableMap<DestType, Tr> tvalmap;
+    final ImmutableMap<DestType, Type> tvalmap;
     final CassandraMatchType ct;
     private final Serializer<?> valueSerialiser;
     private ImmutableList<Type> keyTypes = null;
@@ -67,9 +70,10 @@ public class Col {
      */
 
     Col(CF cf, CassandraMatchType mt) {
+
         this.ct = mt;
         this.cf = cf;
-        name = mt.getName();
+        id = mt.getId();
 
 
         RootType ref = GenUtils.getReferenceModel();
@@ -77,8 +81,7 @@ public class Col {
         SortedMap<Integer, Lev> keyb = new TreeMap<Integer, Lev>();
         SortedMap<Integer, Lev> colb = new TreeMap<Integer, Lev>();
         SortedMap<Integer, Lev> valb = new TreeMap<Integer, Lev>();
-        ImmutableTable.Builder<LevelType, DestType, Tr> tmapb = ImmutableTable.builder();
-        ImmutableMap.Builder<DestType, Tr> tvalmapb = ImmutableMap.builder();
+        ImmutableMap.Builder<DestType, Type> tvalmapb = ImmutableMap.builder();
         Type var = null;
         //joining the Cassandra model with the Reference one
         for (LevelType l : mt.getRefPath().getLevel()) {
@@ -97,34 +100,12 @@ public class Col {
                     break;
                 }
             }
-            List<CassandraDestType> dcolumns = selectDest(l.getDest(), CassandraDestTypes.COLUMN_NAME);
-            List<CassandraDestType> dkeys = selectDest(l.getDest(), CassandraDestTypes.KEY);
-            List<CassandraDestType> dvalues = selectDest(l.getDest(), CassandraDestTypes.VALUE);
-            if (!dcolumns.isEmpty()) {
-                for (CassandraDestType cd : dcolumns) {
-                    Tr t = new Tr(cd, wr(st));
-                    colb.put(cd.getPosition(), new Lev(l.getName(), GenUtils.getTypeFromClass(t.valueClass)));
-                    tmapb.put(l, cd, t);
-                }
-            }
-            if (!dkeys.isEmpty()) {
-                for (CassandraDestType ks : dkeys) {
-                    Tr t = new Tr(ks, wr(st));
-                    keyb.put(ks.getPosition(), new Lev(l.getName(), GenUtils.getTypeFromClass(t.valueClass)));
-                    tmapb.put(l, ks, t);
-                }
-            }
-            if (!dvalues.isEmpty()) {
-                for (CassandraDestType vd : dvalues) {
-                    Tr t = new Tr(vd, wr(st));
-                    valb.put(vd.getPosition(), new Lev(l.getName(), GenUtils.getTypeFromClass(t.valueClass)));
-                    tmapb.put(l, vd, t);
-                }
-            }
+            //I'm selecting all the destinations which go as key, column ro value
+
 
 
         }
-        tmap = tmapb.build();
+
         //*adding the fixed types
         //*adding the fixed types
         /**
@@ -133,10 +114,43 @@ public class Col {
          * handle them?
          */
         if (!ct.getFixedDests().getFixedDest().isEmpty()) {
-            FixedColumnName f = ct.getFixedColumnName();
-            colb.put(f.getPosition(), new Lev(f.getName(), wr(f.getStandardType())));
+            List<FixedDest> dcolumns = selectFixedDest(ct.getFixedDests().getFixedDest(),
+                    CassandraDestTypes.COLUMN_NAME);
+            List<FixedDest> dkeys = selectFixedDest(ct.getFixedDests().getFixedDest(),
+                    CassandraDestTypes.KEY);
+            List<FixedDest> dvalues = selectFixedDest(ct.getFixedDests().getFixedDest(),
+                    CassandraDestTypes.VALUE);
+            if (!dcolumns.isEmpty()) {
+                for (FixedDest cd : dcolumns) {
+                    CassandraDestType dest = (CassandraDestType) cd.getDest();
+                    colb.put(dest.getPosition(), new Lev(cd.getFixedValue(),
+                            wr(TransformerUtil.getReturningStandardType(cd.getDest(),
+                            cd.getFixedValueType()))));
 
+                }
+            }
+            if (!dkeys.isEmpty()) {
+                for (FixedDest ks : dkeys) {
+                    CassandraDestType dest = (CassandraDestType) ks.getDest();
+                    keyb.put(dest.getPosition(), new Lev(ks.getFixedValue(),
+                            wr(TransformerUtil.getReturningStandardType(ks.getDest(),
+                            ks.getFixedValueType()))));
+
+                }
+            }
+            if (!dvalues.isEmpty()) {
+                for (FixedDest vd : dvalues) {
+                    CassandraDestType dest = (CassandraDestType) vd.getDest();
+
+                    valb.put(dest.getPosition(), new Lev(vd.getFixedValue(),
+                            wr(TransformerUtil.getReturningStandardType(vd.getDest(),
+                            vd.getFixedValueType()))));
+
+                }
+            }
         }
+
+
 
 
 
@@ -145,25 +159,23 @@ public class Col {
 
         tvalmap = tvalmapb.build();
         if (valb.isEmpty()) {
-            throw new IllegalArgumentException("Wrong configuration."
-                    + " A level has been setted to be part of the value but this column is valueless");
+            valueType = ValueType.VALUELESS;
 
+        } else if (valb.size() > 1) {
+            valueType = ValueType.COMPOSITE_VALUE;
+            valueSerialiser = CompositeSerializer.get();
         } else {
-            if (valb.size() > 1) {
-                valueType = ValueType.COMPOSITE_VALUE;
-                valueSerialiser = CompositeSerializer.get();
-            } else {
-                valueType = ValueType.SINGLE_VALUE;
-                valueSerialiser = Serializers.getSerializer(valb.get(0).type);
-            }
+            valueType = ValueType.SINGLE_VALUE;
+            valueSerialiser = Serializers.getSerializer(valb.get(0).type);
+
         }
 
-        log.log(Level.INFO, "{0} with valueType {1} ", new Object[]{name, valueType});
+        log.log(Level.INFO, "{0} with valueType {1} ", new Object[]{id, valueType});
 
-        checkArgument(keyb.size() > 0, "In the column %s of the CF %s it is not defined any keytype", new Object[]{name, cf.name});
-        checkArgument(colb.size() > 0, "In the column %s of the CF %s it is not defined any columntype", new Object[]{name, cf.name});
+        checkArgument(keyb.size() > 0, "In the column %s of the CF %s it is not defined any keytype", new Object[]{id, cf.name});
+        checkArgument(colb.size() > 0, "In the column %s of the CF %s it is not defined any columntype", new Object[]{id, cf.name});
         checkArgument(valb.size() > 0,
-                "In the column %s of the CF %s it is not defined any valuetype", new Object[]{name, cf.name});
+                "In the column %s of the CF %s it is not defined any valuetype", new Object[]{id, cf.name});
         checkArgument(keyb.firstKey().equals(0), "The key position must starts from 0");
         checkArgument(keyb.lastKey().equals(keyb.size() - 1), "The number position of the keys must be consegutive");
         checkArgument(colb.firstKey().equals(0), "The column position must starts from 0");
@@ -174,33 +186,7 @@ public class Col {
 
 
 
-    }
 
-    /**
-     * This method transform one of the element of the path
-     *
-     * @param lev
-     * @param DestType
-     * @param object
-     * @return
-     */
-    public Object transform(LevelType lev, DestType DestType, Object object) {
-        Tr t = checkNotNull(tmap.get(lev, DestType), "Transformation class not found");
-        return t.transform(object);
-    }
-
-    /**
-     * This method transform the value (leaf of the reference model) following
-     * the current model
-     *
-     * @param refPath
-     * @param DestType
-     * @param value
-     * @return
-     */
-    public Object transform(DestType DestType, Object value) {
-        Tr t = checkNotNull(tvalmap.get(DestType), "Transformation class not found");
-        return t.transform(value);
     }
 
     public Serializer<?> getValueSerializer() {
@@ -235,6 +221,12 @@ public class Col {
 
     }
 
+    /**
+     * Wraps a standard Type into a General Type.
+     *
+     * @param s
+     * @return
+     */
     private Type wr(StandardType s) {
         Type t = new Type();
         t.setStandardType(s);
@@ -289,7 +281,7 @@ public class Col {
             return null;
         }
         BasicColumnDefinition c = new BasicColumnDefinition();
-        log.log(Level.INFO, "column: {0}", name);
+        log.log(Level.INFO, "column: {0}", id);
         //it checks if the column name is fixed or
 
         List<FixedDest> fixedColumns = selectFixedDest(fixedDest,
@@ -344,7 +336,7 @@ public class Col {
         log.log(Level.INFO, "Column value: set validator {0}", c.getValidationClass());
         if (ct.isIndex()) {
             c.setIndexType(ColumnIndexType.KEYS);
-            c.setIndexName(ct.getName().replaceAll(" ", ""));
+            c.setIndexName(ct.getId().replaceAll(" ", ""));
         }
 
 
@@ -353,6 +345,187 @@ public class Col {
 
     public RefPathType getRefPath() {
         return ct.getRefPath();
+    }
+
+    public Object[] getParts(Collection<Mapping> match) {
+        List<Mapping> keymaps = new ArrayList<Mapping>();
+        List<Mapping> colmaps = new ArrayList<Mapping>();
+        List<Mapping> valmaps = new ArrayList<Mapping>();
+        for (Mapping m : match) {
+            String w = m.getDest().getWhere();
+            if (w.equals(CassandraDestTypes.KEY.value())) {
+                keymaps.add(m);
+            } else if (w.equals(CassandraDestTypes.COLUMN_NAME.value())) {
+                colmaps.add(m);
+            } else if (w.equals(CassandraDestTypes.VALUE.value())) {
+                valmaps.add(m);
+            } else {
+                throw new IllegalStateException("Unknown destination type");
+            }
+        }
+        Object[] result = new Object[3];
+        if (keymaps.size() == 1) {
+            checkArgument(this.cf.getKeyType().size() == 1,
+                    "wrong number of key elements");
+            result[0] = cf.keySerializer.toByteBuffer(log)
+        }
+
+    }
+    /*
+     * How to determine the row key: the list of levels for each column
+     * determine the object to use to set the key. The @path is the list of
+     * value of key and in @pm there's the refPath for determine which path
+     * entry to use to composite the row key. The value of the key could be
+     * taken by the @path or, in the case of valueless column, from the @value
+     *
+     *
+     */
+
+    public Object getKey(ImmutableList<Mapping> match) {
+
+        switch (cf.keyType) {
+            case SINGLE_KEY: {
+                //if the key is fixed
+                for (Mapping m : match) {
+                    CassandraDestType dest = (CassandraDestType) m.getDest();
+                    if (dest.getWhere().equals(CassandraDestTypes.KEY.value())) {
+                        return wrap(m.getTransformedValue());
+                    }
+                }
+
+                throw new IllegalArgumentException("Illegal configuration");
+            }
+
+            case COMPOSITE_KEY: {
+
+                Composite cs = new Composite();
+
+                Object[] componets = new Object[getKeyTypes().size()];
+                for (Mapping m : match) {
+
+                    CassandraDestType dest = (CassandraDestType) m.getDest();
+                    if (dest.getWhere().equals(CassandraDestTypes.KEY.value())) {
+                        componets[dest.getPosition()] = m.getTransformedValue();
+                    }
+                }
+                for (Object c : componets) {
+                    cs.addComponent(c, (Serializer) Serializers.getSerializer(c));
+                }
+
+                checkArgument(cs.size() > 0);
+                return cs;
+            }
+
+            default:
+                throw new UnsupportedOperationException("Not yet implemented");
+
+        }
+
+
+    }
+    //TODO check here for index columnName  
+
+    public Object getColumnName(ImmutableList<Mapping> match) {
+        //
+
+        List<Type> cntypes = getColumnNameTypes();
+        checkArgument(cntypes.size() > 0);
+        if (cntypes.size() == 1) {
+            for (Mapping m : match) {
+                CassandraDestType dest = (CassandraDestType) m.getDest();
+                if (dest.getWhere().equals(CassandraDestTypes.COLUMN_NAME.value())) {
+                    return wrap(m.getTransformedValue());
+                }
+            }
+
+            throw new IllegalArgumentException("Illegal configuration");
+        } else {
+
+            //TODO CORRECT HERE
+            AbstractComposite cs;
+            switch (cf.columnSort) {
+                case DYNAMIC:
+                    cs = new DynamicComposite();
+                    break;
+                case COMPOSITE:
+                    cs = new Composite();
+                    break;
+                default:
+                    throw new IllegalArgumentException("Value " + cf.columnSort);
+            }
+
+            Object[] componets = new Object[getColumnNameTypes().size()];
+
+            for (Mapping m : match) {
+
+                CassandraDestType dest = (CassandraDestType) m.getDest();
+                if (dest.getWhere().equals(CassandraDestTypes.COLUMN_NAME.value())) {
+                    componets[dest.getPosition()] = m.getTransformedValue();
+                }
+            }
+
+            for (Object c : componets) {
+                cs.addComponent(c, (Serializer) Serializers.getSerializer(c));
+            }
+            checkArgument(cs.size() > 0);
+            return cs;
+        }
+
+    }
+
+    private Object wrap(Object o) {
+        switch (cf.columnSort) {
+            case DYNAMIC:
+                DynamicComposite dc = new DynamicComposite();
+                dc.addComponent(o, (Serializer) Serializers.getSerializer(o));
+                return dc;
+            case COMPOSITE:
+                Composite c = new Composite();
+                c.addComponent(0, (Serializer) Serializers.getSerializer(o));
+                return c;
+            case SINGLE:
+            default:
+                return o;
+        }
+    }
+
+    public Object getValue(ImmutableList<Mapping> match) {
+
+        if (this.valueType.equals(ValueType.VALUELESS)) {
+            return new byte[0];
+        }
+
+
+        List<Type> valtypes = getValueTypes();
+        checkArgument(valtypes.size() > 0);
+        if (valtypes.size() == 1) {
+
+            for (Mapping m : match) {
+                CassandraDestType dest = (CassandraDestType) m.getDest();
+                if (dest.getWhere().equals(CassandraDestTypes.VALUE.value())) {
+                    return m.getTransformedValue();
+                }
+            }
+            throw new IllegalArgumentException("Illegal configuration");
+
+        } else {
+            Composite cs = new Composite();
+            Object[] componets = new Object[getColumnNameTypes().size()];
+
+            for (Mapping m : match) {
+
+                CassandraDestType dest = (CassandraDestType) m.getDest();
+                if (dest.getWhere().equals(CassandraDestTypes.KEY.value())) {
+                    componets[dest.getPosition()] = m.getTransformedValue();
+                }
+            }
+
+            for (Object c : componets) {
+                cs.addComponent(c, (Serializer) Serializers.getSerializer(c));
+            }
+            checkArgument(cs.size() > 0);
+            return cs;
+        }
     }
 
     static class Lev {

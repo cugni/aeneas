@@ -203,10 +203,9 @@ public class XMLCassandraSetter extends AbstractCassandraDB {
 
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public void open(String clusterName, String location) throws UnreachableClusterException {
-        super.open(clusterName, location);
+    public void connect() throws UnreachableClusterException {
+      
 
         ConfigurableConsistencyLevel configurableConsistencyLevel = new ConfigurableConsistencyLevel();
         Map<String, HConsistencyLevel> clread = new HashMap<String, HConsistencyLevel>(4);

@@ -8,7 +8,7 @@ import es.bsc.aeneas.core.model.gen.ClustererType;
 import es.bsc.aeneas.core.model.gen.DestType;
 import es.bsc.aeneas.core.model.gen.TransformType;
 import es.bsc.aeneas.core.model.clusterer.TypeClusterer;
-import es.bsc.aeneas.core.model.gen.LevelType;
+import es.bsc.aeneas.core.model.gen.StandardType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author ccugnasc
  */
-public class TrasformerUtil {
+public class TransformerUtil {
 
     private static final ConcurrentHashMap<String, THolder> classMap = new ConcurrentHashMap<String, THolder>();
 
@@ -49,7 +49,52 @@ public class TrasformerUtil {
         return res;
 
     }
-      
+    /***
+     * This method resolves, for a given DestType, the chain of transformations
+     * are returns the StandardType corresponding to the returning object. 
+     * @param dt
+     * @param levelType
+     * @return the StandardType of the returning object
+     */
+
+    public static StandardType getReturningStandardType(DestType dt, StandardType levelType) {
+
+        if (dt.getTransform().isEmpty()) {
+            return levelType;
+        }
+        return GenUtils
+                .getStandardTypeFromClass(
+                getReturningClass(dt, levelType));
+
+    }
+
+    /***
+     * This method resolves, for a given DestType, the chain of transformations
+     * are returns the Class of  the returning object. 
+     * @param dt
+     * @param levelType
+     * @return the Class of the returning object
+     */
+    public static Class getReturningClass(DestType dt, StandardType levelType) {
+        Class calling = GenUtils.getClass(levelType);
+        if (dt.getTransform().isEmpty()) {
+            return calling;
+        }
+        THolder th;
+        for (TransformType tra : dt.getTransform()) {
+            String methodId = tra.getClassName() + "#" + tra.getMethodName() + "(" + calling.getName() + ")";
+            if (classMap.containsKey(methodId)) {
+                th = classMap.get(methodId);
+            } else {
+                th = new THolder(tra, calling);
+                classMap.put(methodId, th);
+            }
+            calling = th.retClass;
+
+        }
+        return calling;
+
+    }
 
     private static class THolder {
 
@@ -59,6 +104,7 @@ public class TrasformerUtil {
                 cla = Class.forName(tra.getClassName());
 
                 method = cla.getMethod(tra.getMethodName(), calling);
+                retClass = method.getReturnType();
                 isStatic = Modifier.isStatic(method.getModifiers());
                 obj = (isStatic) ? null : cla.newInstance();
                 if (tra instanceof ClustererType) {
@@ -78,6 +124,7 @@ public class TrasformerUtil {
         private final Class cla;
         private final Object obj;
         private final Method method;
+        private final Class retClass;
 
         private Object invoke(Object o) {
             try {

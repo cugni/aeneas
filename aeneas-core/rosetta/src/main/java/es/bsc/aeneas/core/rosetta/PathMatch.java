@@ -24,17 +24,19 @@ public class PathMatch {
     private final MatchType mt;
     private final List<Mapping> fixedMappings;
     private final List<String> path;
+    private final String id;
 
-    PathMatch(List<String> path,MatchType mt) {
-        this.path=path;
+    PathMatch(List<String> path, MatchType mt) {
+        this.path = path;
+        this.id = mt.getId();
         this.mt = checkNotNull(mt);
         //inserting the fixed values
 
         ImmutableList.Builder<Mapping> b = ImmutableList.builder();
         for (FixedDest df : mt.getFixedDests().getFixedDest()) {
             Object o = GenUtils.castObject(df.getFixedValue(), df.getFixedValueType());
-            for (DestType dt : df.getDest()) {
-                Mapping m = new Mapping(dt, o);
+            if (df.getDest() != null) {
+                Mapping m = new Mapping(df.getDest(), o);
                 b.add(m);
             }
 
@@ -47,7 +49,7 @@ public class PathMatch {
         return path;
     }
 
-    public List<Mapping> split(Object[] path) {
+    public ImmutableList<Mapping> split(Object[] path) {
         List<LevelType> levels = mt.getRefPath().getLevel();
         checkArgument(path.length == levels.size());
 
@@ -64,5 +66,9 @@ public class PathMatch {
         }
         return b.build();
 
+    }
+
+    public String getId() {
+        return id;
     }
 }

@@ -5,6 +5,7 @@ import es.bsc.aeneas.core.model.gen.ClusterType;
 import javax.inject.Inject;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -64,12 +65,12 @@ public class ParallelRosetta implements Rosetta {
 
     }
 
-    private Collection<PathMatch> clusterMatching(CrudType crud, Object[] path) {
-        List<PathMatch> l = new ArrayList();
+    private ImmutableList<PathMatch> clusterMatching(CrudType crud, Object[] path) {
+        ImmutableList.Builder<PathMatch> l = ImmutableList.builder();
         for (PathMatchMap pmm : clusterPathMatches.values()) {
             l.addAll(pmm.getPathMatches(crud, path));
         }
-        return l;
+        return l.build();
     }
 
     @Override

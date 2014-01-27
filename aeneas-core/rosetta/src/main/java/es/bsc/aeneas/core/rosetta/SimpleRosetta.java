@@ -7,6 +7,7 @@ import com.sun.istack.internal.logging.Logger;
 import es.bsc.aeneas.core.model.gen.CrudType;
 import es.bsc.aeneas.core.model.gen.EnvType;
 import es.bsc.aeneas.core.model.gen.RootType;
+import java.util.Collection;
 import org.apache.commons.configuration.Configuration;
 
 /**
@@ -15,7 +16,7 @@ import org.apache.commons.configuration.Configuration;
  * @author ccugnasc
  */
 public class SimpleRosetta implements Rosetta {
-
+    
     @Inject
     private ClusterHandler clusterHandler;
     private PathMatchMap clusterPathMatch;
@@ -26,20 +27,24 @@ public class SimpleRosetta implements Rosetta {
     @Inject
     RootType root;
     private Logger log = Logger.getLogger(SimpleRosetta.class);
-
+    
     @Override
     public void init() {
         checkArgument(env.getCluster().size() != 1,
                 "If you have more than one cluster use ParallelRosetta instead of the Simple one");
         clusterPathMatch = new PathMatchMap(root, env.getCluster().get(0));
     }
-
+    
     @Override
     public Result queryAll(CrudType crud, Object[] path) throws Exception {
-
-        return clusterHandler.query(crud, clusterPathMatch.getPathMatches(crud, path)).call();
+        Collection<PathMatch> pathMatches = clusterPathMatch.getPathMatches(crud, path);
+        Result r = new Result();
+        for (PathMatch pm : pathMatches) {
+            r = r.merge(clusterHandler.query(crud,pm.getId(), pm.split(path)).call());
+        }
+        return r;
     }
-
+    
     @Override
     public Result getMatching(CrudType crud, String url) {
         throw new RuntimeException("To be implemented");

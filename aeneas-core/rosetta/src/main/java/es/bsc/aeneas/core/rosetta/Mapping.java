@@ -5,7 +5,7 @@
 package es.bsc.aeneas.core.rosetta;
 
 import es.bsc.aeneas.core.model.gen.DestType;
-import es.bsc.aeneas.core.model.util.TrasformerUtil;
+import es.bsc.aeneas.core.model.util.TransformerUtil;
 
 /**
  *
@@ -17,11 +17,11 @@ public class Mapping {
     private final DestType dest;
     private Object res = null;
 
-    public Object getTrasforedValue() {
+    public Object getTransformedValue() {
         if (res != null) {
             return res;
         }
-        res = TrasformerUtil.transform(dest, value);
+        res = TransformerUtil.transform(dest, value);
         return res;
     }
 

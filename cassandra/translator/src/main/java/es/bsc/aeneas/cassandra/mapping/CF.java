@@ -30,6 +30,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import es.bsc.aeneas.cassandra.serializers.Serializers;
 import es.bsc.aeneas.cassandra.translator.TrUtils;
+import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
+import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
 
 /**
  *
@@ -44,16 +46,22 @@ public class CF {
     public final String comparatorAlias;
     public final KeyType keyType;
     public final String keyValidationClass;
-    public final Serializer<? extends Object> columnNameS;
+    public final Serializer<? extends Object> columnNameSerializer;
     public final Class<? extends Object> columnNameType;
     public final ImmutableList<Col> columns;
     private final ImmutableList<Type> keyTypes;
     private final Type keySingleType;
-    public final Serializer<?> keyserializer;
+    public final Serializer<?> keySerializer;
     public final String name;
+    public final Ks ks;
+    public final ThriftColumnFamilyTemplate template;
 
-    CF(Reorder cf) {
-        
+    public Ks getKs() {
+        return ks;
+    }
+
+    CF(Ks ks,Reorder cf) {
+        this.ks=ks;
 
         this.cft = cf.columnFamily;
         name = cft.getName();
@@ -142,14 +150,14 @@ public class CF {
                 case SINGLE:
                     comparator = TrUtils.getComparator(lst.iterator().next());
                     comparatorAlias = "";
-                    columnNameS = Serializers.getSerializer(lst.iterator().next());
+                    columnNameSerializer = Serializers.getSerializer(lst.iterator().next());
                     columnNameType = GenUtils.getClass(lst.iterator().next());
                     log.log(Level.INFO, "CF {0}: simple column sorter with {1} type", new Object[]{name, columnNameType});
                     break;
                 case DYNAMIC:
                     comparator = ComparatorType.DYNAMICCOMPOSITETYPE;
                     comparatorAlias = DynamicComposite.DEFAULT_DYNAMIC_COMPOSITE_ALIASES;
-                    columnNameS = DynamicCompositeSerializer.get();
+                    columnNameSerializer = DynamicCompositeSerializer.get();
                     columnNameType = DynamicComposite.class;
                     log.log(Level.INFO, "CF {0}: dynamic column sorter ", name);
                     break;
@@ -162,7 +170,7 @@ public class CF {
                     }
                     sb.deleteCharAt(sb.length() - 1).append(")");
                     comparatorAlias = sb.toString();
-                    columnNameS = CompositeSerializer.get();
+                    columnNameSerializer = CompositeSerializer.get();
                     columnNameType = Composite.class;
                     log.log(Level.INFO, "CF {0}: composite column sorter with {1} types", new Object[]{name, comparatorAlias});
                     break;
@@ -200,12 +208,12 @@ public class CF {
                 }
                 if (dynamic) {
                     keyType = KeyType.DYNAMIC_KEY;
-                    keyserializer = DynamicCompositeSerializer.get();
+                    keySerializer = DynamicCompositeSerializer.get();
                     keyValidationClass = "DynamicCompositeType";
                     keyTypes = null;
                     keySingleType = null;
                 } else {
-                    keyserializer = CompositeSerializer.get();
+                    keySerializer = CompositeSerializer.get();
                     keyType = KeyType.COMPOSITE_KEY;
                     ArrayList<Type> types = new ArrayList<Type>(3);
                     for (Lev nt : columns.get(0).keys) {
@@ -237,7 +245,7 @@ public class CF {
                 }
                 if (dynamic) {
                     keyType = KeyType.DYNAMIC_KEY;
-                    keyserializer = DynamicCompositeSerializer.get();
+                    keySerializer = DynamicCompositeSerializer.get();
                     keyValidationClass = "DynamicComposite" + DynamicComposite.DEFAULT_DYNAMIC_COMPOSITE_ALIASES;
                     keyTypes = null;
                     keySingleType = null;
@@ -245,7 +253,7 @@ public class CF {
                 } else {
                     keyTypes = null;
                     keyType = KeyType.SINGLE_KEY;
-                    keyserializer = Serializers.getSerializer(t.get(0));
+                    keySerializer = Serializers.getSerializer(t.get(0));
                     keyValidationClass = TrUtils.getComparator(t.get(0)).getTypeName();
                     keySingleType = t.get(0);
                 }
@@ -253,6 +261,11 @@ public class CF {
                         new Object[]{name, keyType, keyValidationClass});
             }
         }
+        
+            template = new ThriftColumnFamilyTemplate(ks.ksp,
+                         name,
+                         columnNameSerializer,
+                        keySerializer);
     }
 
      

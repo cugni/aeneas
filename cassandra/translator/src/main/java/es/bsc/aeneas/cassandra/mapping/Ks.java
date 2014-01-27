@@ -3,9 +3,10 @@ package es.bsc.aeneas.cassandra.mapping;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import es.bsc.aeneas.cassandra.serializers.Serializers;
+import es.bsc.aeneas.commons.CUtils;
 import es.bsc.aeneas.core.model.gen.KeyspaceType;
 import es.bsc.aeneas.core.model.gen.StrategyType;
- import me.prettyprint.hector.api.Serializer;
+import me.prettyprint.hector.api.Serializer;
 import me.prettyprint.hector.api.beans.DynamicComposite;
 import me.prettyprint.hector.api.ddl.ColumnFamilyDefinition;
 import me.prettyprint.hector.api.ddl.ComparatorType;
@@ -15,6 +16,10 @@ import me.prettyprint.hector.api.factory.HFactory;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import me.prettyprint.cassandra.model.ConfigurableConsistencyLevel;
+import me.prettyprint.cassandra.service.CassandraHostConfigurator;
+import me.prettyprint.hector.api.HConsistencyLevel;
+import me.prettyprint.hector.api.Keyspace;
 
 /**
  *
@@ -26,18 +31,47 @@ public class Ks {
     public final ImmutableList<CF> cfs;
     final KeyspaceType keyspaceType;
     public final String name;
+    public final Cassa cassa;
+    public final Keyspace ksp;
+    //Consistency settings
+    private final HConsistencyLevel readconsistency =
+            HConsistencyLevel.valueOf(
+            CUtils.getString("cassandra.readconsistency", HConsistencyLevel.QUORUM.name()));
+    private final HConsistencyLevel writeconsistency =
+            HConsistencyLevel.valueOf(CUtils.getString("cassandra.writeconsistency", HConsistencyLevel.ANY.name()));
+    private final boolean autoDiscoverHosts = CUtils.getBoolean("cassandra.autoDiscoverHosts", true);
 
-    
-
-    Ks(Map<String, Reorder> row) {
+    Ks(Cassa cassa, Map<String, Reorder> row) {
+        this.cassa = cassa;
         Reorder r = row.values().iterator().next();
-        this.keyspaceType=r.keyspace;
-        name=this.keyspaceType.getName();
+        this.keyspaceType = r.keyspace;
+
+        name = this.keyspaceType.getName();
         Builder<CF> builder = ImmutableList.builder();
-        for (Reorder cft :row.values()) {
-            builder.add(new CF(cft));
+        for (Reorder cft : row.values()) {
+            builder.add(new CF(this, cft));
         }
         cfs = builder.build();
+        //Add the schema to the cluster.
+        //"true" as the second param means that Hector will block until all nodes see the change.
+        ConfigurableConsistencyLevel configurableConsistencyLevel = new ConfigurableConsistencyLevel();
+        Map<String, HConsistencyLevel> clread = new HashMap<String, HConsistencyLevel>(4);
+        Map<String, HConsistencyLevel> clwrite = new HashMap<String, HConsistencyLevel>(4);
+
+        for (ColumnFamilyDefinition cfd : createKeyspaceDefinition().getCfDefs()) {
+            clread.put(cfd.getName(), readconsistency);
+            clwrite.put(cfd.getName(), writeconsistency);
+        }
+        configurableConsistencyLevel.setReadCfConsistencyLevels(clread);
+        configurableConsistencyLevel.setWriteCfConsistencyLevels(clwrite);
+
+        CassandraHostConfigurator conf = new CassandraHostConfigurator();
+        conf.setAutoDiscoverHosts(autoDiscoverHosts);
+
+        ksp = HFactory.createKeyspace(createKeyspaceDefinition().getName(),
+                cassa.cluster, configurableConsistencyLevel);
+
+
     }
 
     public KeyspaceDefinition createKeyspaceDefinition() {

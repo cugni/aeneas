@@ -8,7 +8,7 @@ and open the template in the editor.
 <ns1:root
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xmlns:ns1='http://aeneas.bsc.es/CassandraModel'
-    xsi:schemaLocation='http://aeneas.bsc.es/CassandraModel file:/home/ccugnasc/workspace/aeneas/model/src/main/resources/CassandraModel.xsd'>
+    xsi:schemaLocation='http://aeneas.bsc.es/CassandraModel file:/home/ccugnasc/workspace/aeneas/cassandra/translator/src/main/resources/CassandraModel.xsd'>
     <ns2:cluster name="" address="">
         <ns2:settings></ns2:settings>
         <ns2:matches>

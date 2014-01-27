@@ -177,30 +177,6 @@ public class GenUtils {
         }
     }
 
-//    public static ComparatorType getComparator(StandardType t) {
-//        return ComparatorType.getByClassName(t.value());
-//    }
-//    
-//    public static ComparatorType getComparator(Type value) {
-//        
-//        if (value.getStandardType() != null) {
-//            if (value.getStandardType().equals(StandardType.ANY_TYPE)) {
-//                return ComparatorType.DYNAMICCOMPOSITETYPE;
-//            }
-//            return ComparatorType.getByClassName(value.getStandardType().value());
-//        } else {
-//            Serializer<? extends Object> s = Serializers.getSerializer(value);
-//            
-//            return s == null ? ComparatorType.BYTESTYPE : s.getComparatorType();
-//            
-//        }
-//        
-//    }
-//    
-//    public static Ks getCassandraModel(String cassandraModelName) {
-//        return getCassandraModel(getCassandraModelFile(cassandraModelName));
-//        
-//    }
 //    
     public static EnvType getMatchingModel(URL matchingFile) {
         try {
@@ -264,32 +240,7 @@ public class GenUtils {
 
     }
 
-//    public static boolean compareComposite(AbstractComposite c1, AbstractComposite c2) {
-//        if (!c1.getClass().equals(c2.getClass())) {
-//            return false;
-//        }
-//        if (c1.size() != c2.size()) {
-//            return false;
-//        }
-//        for (int i = 0; i < c1.size(); i++) {
-//            Object get = c1.get(i);
-//            Object get1 = c2.get(i);
-//            if (!get.equals(get1)) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
-//    public static String getCompositeDefinition(List<Type> keyTypes) {
-//        StringBuilder sb = new StringBuilder(20);
-//        sb.append("CompositeType(");
-//        
-//        for (Type ty : keyTypes) {
-//            sb.append(GenUtils.getComparator(ty).getTypeName()).append(",");
-//        }
-//        sb.deleteCharAt(sb.length() - 1).append(")");
-//        return sb.toString();
-//    }
+
     /**
      * Return an Aeneas model's type from a java Class Object
      *
