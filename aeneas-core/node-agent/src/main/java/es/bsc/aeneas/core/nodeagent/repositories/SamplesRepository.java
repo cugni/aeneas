@@ -33,7 +33,7 @@ import org.springframework.stereotype.Repository;
  * @author ccugnasc
  */
 @Repository
-public class SamplesRepository {
+public class SamplesRepository implements SamplesRepo {
 
     private final Cluster cluster;
     private final Keyspace ksp;
@@ -67,6 +67,7 @@ public class SamplesRepository {
      * @param node
      * @return an object Samples containing the result
      */
+    @Override
     public Samples getSamples(String test, String context, String metric, String node) {
 
         Composite from = new Composite();
@@ -108,6 +109,7 @@ public class SamplesRepository {
      * @param results
      * @return an object Samples containing the result
      */
+    @Override
     public Samples getSamples(String test, String context, String metric, String node, long tfrom, Integer results) {
         if (results == null) {
             results = MAX_RESULTS_SIZE;
@@ -148,6 +150,7 @@ public class SamplesRepository {
      * @param node
      * @return
      */
+    @Override
     public Samples getLastSamples(String test, String context, String metric, String node) {
         return getSamples(test, context, metric, node, false, null);
     }
@@ -199,6 +202,7 @@ public class SamplesRepository {
      * @param node
      * @return
      */
+    @Override
     public Samples getFistSamples(String test, String context, String metric, String node) {
         return getSamples(test, context, metric, node, true, null);
     }
@@ -213,6 +217,7 @@ public class SamplesRepository {
      * @param from
      * @return
      */
+    @Override
     public Samples getFistSamples(String test, String context, String metric, String node, Long from) {
         return getSamples(test, context, metric, node, true, from);
     }
@@ -227,6 +232,7 @@ public class SamplesRepository {
      * @param from
      * @return
      */
+    @Override
     public Samples getLastSamples(String test, String context, String metric, String node, Long from) {
         return getSamples(test, context, metric, node, false, from);
     }

@@ -4,7 +4,7 @@
  */
 package es.bsc.aeneas.nodeagent.metricstorer;
 
-import es.bsc.aeneas.core.nodeagent.metricstorer.AeneasMetricsStorer;
+import es.bsc.aeneas.cassandra.nodeagent.AeneasMetricsStorer;
 import es.bsc.aeneas.core.loader.DBSetter;
 import es.bsc.aeneas.cassandra.translator.LightXMLCassandraSetter;
 import es.bsc.aeneas.core.nodeagent.Metric;

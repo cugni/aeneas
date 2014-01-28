@@ -31,7 +31,7 @@ import org.springframework.stereotype.Repository;
  * @author ccugnasc
  */
 @Repository
-public class MetricsRepository {
+public class MetricsRepository implements MetricsRepo {
 
     private static final Logger log = Logger.getLogger(MetricsRepository.class.getName());
     private final int MAX_RESULTS_SIZE;
@@ -50,10 +50,12 @@ public class MetricsRepository {
 
     }
 
+    @Override
     public List<AEMetric> getMetrics(String context) {
         return getMetrics(context, null);
     }
 
+    @Override
     public List<AEMetric> getMetrics() {
         return getMetrics(null, null);
     }
@@ -67,6 +69,7 @@ public class MetricsRepository {
      * @return a list of metrics
      *
      */
+    @Override
     public List<AEMetric> getMetrics(String context, String from) {
 
         DynamicComposite s;

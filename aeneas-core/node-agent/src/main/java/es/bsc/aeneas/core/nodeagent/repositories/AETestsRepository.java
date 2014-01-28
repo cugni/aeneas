@@ -35,7 +35,7 @@ import org.springframework.stereotype.Repository;
  * @author ccugnasc
  */
 @Repository
-public class AETestsRepository {
+public class AETestsRepository implements AETestRepo {
 
     private static final Logger log = Logger.getLogger(AETestsRepository.class.getName());
     private final int MAX_RESULTS_SIZE;
@@ -54,6 +54,7 @@ public class AETestsRepository {
 
     }
 
+    @Override
     public List<AETest> getTests(String context, String from) throws Exception {
         if (context == null) {
             context = "workloader";

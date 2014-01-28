@@ -4,7 +4,7 @@
  */
 package es.bsc.aeneas.nodeagent.readers;
 
-import es.bsc.aeneas.core.nodeagent.readers.JMXCassandraReader;
+import es.bsc.aeneas.cassandra.nodeagent.readers.JMXCassandraReader;
 import es.bsc.aeneas.core.nodeagent.Metric;
 import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.commons.configuration.Configuration;
