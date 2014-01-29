@@ -4,7 +4,7 @@
  */
 package es.bsc.aeneas.core.nodeagent.controllers;
 
-import es.bsc.aeneas.core.nodeagent.repositories.SamplesRepository;
+import es.bsc.aeneas.cassandra.nodeagent.repositories.SamplesRepository;
 import es.bsc.aeneas.core.nodeagent.model.Samples;
 import javax.inject.Inject;
 import org.springframework.stereotype.Controller;

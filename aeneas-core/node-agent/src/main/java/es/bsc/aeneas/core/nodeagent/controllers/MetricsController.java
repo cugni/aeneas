@@ -5,7 +5,7 @@
 package es.bsc.aeneas.core.nodeagent.controllers;
 
 import es.bsc.aeneas.core.nodeagent.model.AEMetric;
-import es.bsc.aeneas.core.nodeagent.repositories.MetricsRepository;
+import es.bsc.aeneas.cassandra.nodeagent.repositories.MetricsRepository;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;

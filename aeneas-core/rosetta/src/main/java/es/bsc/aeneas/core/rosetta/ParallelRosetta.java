@@ -24,9 +24,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 import org.apache.commons.configuration.Configuration;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * *
@@ -36,19 +36,28 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class ParallelRosetta implements Rosetta {
 
     private BiMap<ClusterHandler, PathMatchMap> clusterHandlers = HashBiMap.create();
+    @Inject
     private Configuration conf;
+    @Inject
+    EnvType env;
+    @Inject
+    RootType root;
     private static Logger log = Logger.getLogger(ParallelRosetta.class.getName());
     private ListeningExecutorService service;
+    private ApplicationContext context;
+
+    @Override
+    public void setApplicationContext(ApplicationContext ac) {
+        this.context = ac;
+    }
 
     @Override
     public void init() throws UnreachableClusterException {
-        ApplicationContext context = new ClassPathXmlApplicationContext("/rosetta-context.xml");
-        EnvType env = context.getBean(EnvType.class);
-        RootType root = context.getBean(RootType.class);
         checkArgument(env.getCluster().size() > 1,
                 "If you have just one clustere use SimpleRosetta instead of the Parallel one");
 
-        checkArgument(env.getCluster().size() != clusterHandlers.size(), "There are not cluster handler for each cluster");
+        checkArgument(env.getCluster().size() != clusterHandlers.size(),
+                "There are not cluster handler for each cluster");
 
 
         for (ClusterType ct : env.getCluster()) {

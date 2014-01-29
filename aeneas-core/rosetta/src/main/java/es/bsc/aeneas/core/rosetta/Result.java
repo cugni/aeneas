@@ -21,6 +21,11 @@ public class Result {
     private Map<String, String> meta;
     public Object result;
 
+    public static Result createSuccess(){
+        Result r=new Result();
+        r.setSuccess(true);
+        return r;        
+    }
     public boolean isSuccess() {
         return success;
     }

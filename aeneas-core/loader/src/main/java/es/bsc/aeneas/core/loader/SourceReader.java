@@ -1,5 +1,6 @@
 package es.bsc.aeneas.core.loader;
 
+import es.bsc.aeneas.core.rosetta.Rosetta;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,7 +27,7 @@ public abstract class SourceReader implements Callable<Boolean>{
 	 * 
 	 * @param db the DBSetter abstract interface of a Database
 	 */
-	public abstract void setDBSetter(DBSetter db);
+	public abstract void setDBSetter(Rosetta db);
 	/* Returns, if any ,the exception occurred during
 	 * the reading. 
 	 * Returns, if any ,the exception occurred during

@@ -8,7 +8,7 @@ package es.bsc.aeneas.core.rosetta.exceptions;
  *
  * @author ccugnasc
  */
-public class TimeoutException extends Exception{
+public class TimeoutException extends RuntimeException{
 
     public TimeoutException() {
     }

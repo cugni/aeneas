@@ -1,10 +1,7 @@
 package es.bsc.aeneas.core.rosetta;
 
-import javax.inject.Inject;
-
 import static com.google.common.base.Preconditions.checkArgument;
 import es.bsc.aeneas.core.model.gen.ClusterType;
-
 import es.bsc.aeneas.core.model.gen.CrudType;
 import es.bsc.aeneas.core.model.gen.EnvType;
 import es.bsc.aeneas.core.model.gen.RootType;
@@ -13,33 +10,43 @@ import es.bsc.aeneas.core.rosetta.exceptions.UnreachableClusterException;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.configuration.Configuration;
+import javax.inject.Inject;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-/**
- * *
- *
- * @author ccugnasc
- */
 public class SimpleRosetta implements Rosetta {
 
-    private ClusterHandler clusterHandler;
-    private PathMatchMap clusterPathMatch;
-    private Logger log = Logger.getLogger(SimpleRosetta.class.getName());
+    private static final Logger log = Logger.getLogger(SimpleRosetta.class.getName());
+    private ClusterHandler clusterHandler = null;
+    private PathMatchMap clusterPathMatch = null;
+    @Inject
+    private ApplicationContext context;
+    @Inject
+    private EnvType env;
+    @Inject
+    private RootType root;
 
     @Override
     public void init() throws UnreachableClusterException {
-        ApplicationContext context = new ClassPathXmlApplicationContext("/rosetta-context.xml");
-        //Selfwiring
-        EnvType env = context.getBean(EnvType.class);
-        RootType root = context.getBean(RootType.class);
+
         checkArgument(env.getCluster().size() != 1,
                 "If you have more than one cluster use ParallelRosetta instead of the Simple one");
         ClusterType clusterType = env.getCluster().get(0);
         clusterPathMatch = new PathMatchMap(root, clusterType);
         clusterHandler = context.getBean(clusterType.getHandlerName(), ClusterHandler.class);
         clusterHandler.init(clusterType);
+        log.log(Level.INFO, "Configured cluster handler {0}", clusterType.getName());
+    }
+
+    void setContext(ApplicationContext context) {
+        this.context = context;
+    }
+
+    void setEnv(EnvType env) {
+        this.env = env;
+    }
+
+    void setRoot(RootType root) {
+        this.root = root;
     }
 
     @Override
@@ -60,5 +67,10 @@ public class SimpleRosetta implements Rosetta {
     @Override
     public Result getMatching(CrudType crud, String url) {
         throw new RuntimeException("To be implemented");
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext ac) {
+        this.context = ac;
     }
 }

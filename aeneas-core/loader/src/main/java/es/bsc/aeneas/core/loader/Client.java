@@ -3,19 +3,18 @@
  * and open the template in the editor.
  */
 package es.bsc.aeneas.core.loader;
+ 
+import es.bsc.aeneas.core.rosetta.exceptions.UnreachableClusterException;
 
-import es.bsc.aeneas.cassandra.translator.Loader;
-import es.bsc.aeneas.cassandra.translator.XMLCassandraSetter;
- import es.bsc.aeneas.core.rosetta.exceptions.UnreachableClusterException;
+import java.io.File;
+import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
- import java.io.File;
- import java.io.PrintStream;
- import java.text.SimpleDateFormat;
- import java.util.*;
- import java.util.logging.Level;
- import java.util.logging.Logger;
-
-/***
+/**
+ * *
  *
  * @author cesare Configurable parameters: maxbatchsize Client.java "resultdir"
  * - dir where file reports are saved "filereporting" - true/false GenUtils.java
@@ -88,7 +87,7 @@ public class Client {
                 loadAndTestData(modelfile, source, sourceFile);
             } else if (command.matches("(quit)|(exit)")) {
                 c.printf("bye bye\n");
-                Loader.getInstance().bruteShutdown();
+           
                 return;
             } else {
                 c.printf("comand %s not found\n", command);
@@ -145,8 +144,7 @@ public class Client {
 ////                    1,//
 ////                    TimeUnit.SECONDS);//
 //        }
-        Loader l = Loader.getInstance();
-
+   
 
         c.println("Starting loading at " + sf.format(new Date()));
         XMLCassandraSetter set = new XMLCassandraSetter(modelfile.toURI().toURL());

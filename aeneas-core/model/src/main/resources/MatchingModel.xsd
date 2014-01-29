@@ -34,6 +34,8 @@
             </element>  
         </sequence>
         <attribute name="name" type="string" use="required"></attribute>
+        <attribute name="handlerName" type="string" use="required"></attribute>       
+       
         <attribute name="address" type="string" use="required"></attribute>
     </complexType>
     

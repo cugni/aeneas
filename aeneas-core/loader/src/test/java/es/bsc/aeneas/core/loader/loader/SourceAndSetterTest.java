@@ -1,18 +1,14 @@
 package es.bsc.aeneas.core.loader.loader;
 
 
-import es.bsc.aeneas.cassandra.translator.Loader;
-import es.bsc.aeneas.core.loader.SourceReader;
-import es.bsc.aeneas.cassandra.translator.XMLCassandraSetter;
-import es.bsc.aeneas.cassandra.translator.AbstractCassandraDB;
-import es.bsc.aeneas.core.loader.IOTestDB;
 import es.bsc.aeneas.core.loader.DBSetter;
+import es.bsc.aeneas.core.loader.SourceReader;
 import es.bsc.aeneas.core.rosetta.exceptions.InvalidPutRequest;
-import es.bsc.aeneas.core.rosetta.exceptions.UnreachableClusterException;
 import es.bsc.aeneas.core.loader.impl.EmbeddedSource;
-import es.bsc.aeneas.model.marshalling.BoxType;
-import es.bsc.aeneas.core.model.marshalling.PointType;
-import org.apache.commons.configuration.Configuration;
+import es.bsc.aeneas.core.model.BoxType;
+import es.bsc.aeneas.core.model.PointType;
+import es.bsc.aeneas.core.rosetta.Rosetta;
+ 
 import org.junit.Test;
 
 import java.io.File;
@@ -22,7 +18,6 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,8 +28,7 @@ import static org.junit.Assert.*;
 public class SourceAndSetterTest {
 
     private final static Logger log = Logger.getLogger(SourceAndSetterTest.class.getName());
-    private static String clusterName = Loader.getInstance().clustername;
-    private static String clusterAdd = Loader.getInstance().clusterlocation;
+   
 
     @Test
     public void EmbeddedSourceTest() throws FileNotFoundException {
@@ -52,7 +46,6 @@ public class SourceAndSetterTest {
         try {
             source.call();
         } catch (Exception ex) {
-            // TODO Auto-generated catch block
             log.log(Level.WARNING, "Exception ", ex);
             fail("Error occurs" + ex.getMessage());
         }
@@ -66,103 +59,103 @@ public class SourceAndSetterTest {
 
    
     
-      @Test
-    public void XMLSetterCassandraTestNoBatched() {
-        log.info("EmbeddedToCassandra2Test No batched");
-        System.setProperty("batched", "false");
-        AbstractCassandraDB db = new XMLCassandraSetter("test");
-
-        abstractCassandraTest(
-                fileName /*
-                 * "CesareTrajectory.txt"
-                 */, db, new EmbeddedSource());
-    }
+//     SS @Test
+//    public void XMLSetterCassandraTestNoBatched() {
+//        log.info("EmbeddedToCassandra2Test No batched");
+//        System.setProperty("batched", "false");
+//        AbstractCassandraDB db = new XMLCassandraSetter("test");
+//
+//        abstractCassandraTest(
+//                fileName /*
+//                 * "CesareTrajectory.txt"
+//                 */, db, new EmbeddedSource());
+//    }
      
-    @Test
-    public void XMLSetterCassandraTestBatched() {
-        log.info("EmbeddedToCassandra2Test batched");
-        System.setProperty("batched", "true");
-        AbstractCassandraDB db = new XMLCassandraSetter("test");
-
-        abstractCassandraTest(
-                fileName /*
-                 * "CesareTrajectory.txt"
-                 */, db, new EmbeddedSource());
-    }
-     public static void abstractCassandraTest(String fileName, AbstractCassandraDB db, final SourceReader source) {
-        try {
-            log.log(Level.INFO, "Testing dbsource {0} reading from the file {1}\n", new Object[]{db.getClass().getSimpleName(), fileName});
-            try {
-                db.open(clusterName, clusterAdd);
-            } catch (UnreachableClusterException ex) {
-                Logger.getLogger(SourceAndSetterTest.class.getName()).log(Level.SEVERE, null, ex);
-                fail(ex.getMessage());
-            }
-            db.configure();
-            source.setDBSetter(db);
-
-            File file = new File(fileName);
-            if (!file.exists()) {
-                fail("test source file not found");
-            }
-            InputStreamReader isr = null;
-            try {
-                isr = new InputStreamReader(new FileInputStream(file));
-                source.open(isr);
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(SourceAndSetterTest.class.getName()).log(Level.SEVERE, null, ex);
-                fail(ex.getMessage());
-            }
-
-
-            try {
-                source.call();
-            } catch (ExecutionException ex) {
-                log.log(Level.SEVERE, null, ex);
-                fail(ex.getMessage());
-                throw new IllegalArgumentException(ex);
-            } catch (Exception ex) {
-                log.log(Level.SEVERE, null, ex);
-                fail(ex.getMessage());
-                throw new IllegalArgumentException(ex);
-            }
-
-            log.log(Level.INFO, "db filling completed , read {0} lines", source.lineRead());
-            Thread.currentThread().sleep(1000);
-            log.log(Level.INFO, "db filling testing");
-            try {
-                isr = new InputStreamReader(new FileInputStream(file));
-                source.open(isr);
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(SourceAndSetterTest.class.getName()).log(Level.SEVERE, null, ex);
-                fail(ex.getMessage());
-            }
-            IOTestDB testDB = new IOTestDB(db);
-            source.setDBSetter(testDB);
-            source.open(isr);
-            log.info("Testing data");
-
-
-            try {
-                source.call();
-            } catch (ExecutionException ex) {
-                log.log(Level.SEVERE, null, ex);
-                fail(ex.getMessage());
-            } catch (Exception ex) {
-                log.log(Level.SEVERE, null, ex);
-                fail(ex.getMessage());
-            }
-            testDB.close();
-            log.info("Testing completed");
-            assertEquals("Failed rows", 0, testDB.failedRows.get());
-            assertEquals("untested rows", 0, testDB.untestedRows.get());
-
-            db.close();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(SourceAndSetterTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
+//    @Test
+//    public void XMLSetterCassandraTestBatched() {
+//        log.info("EmbeddedToCassandra2Test batched");
+//        System.setProperty("batched", "true");
+//        AbstractCassandraDB db = new XMLCassandraSetter("test");
+//
+//        abstractCassandraTest(
+//                fileName /*
+//                 * "CesareTrajectory.txt"
+//                 */, db, new EmbeddedSource());
+//    }
+//     public static void abstractCassandraTest(String fileName, AbstractCassandraDB db, final SourceReader source) {
+//        try {
+//            log.log(Level.INFO, "Testing dbsource {0} reading from the file {1}\n", new Object[]{db.getClass().getSimpleName(), fileName});
+//            try {
+//                db.open();
+//            } catch (UnreachableClusterException ex) {
+//                Logger.getLogger(SourceAndSetterTest.class.getName()).log(Level.SEVERE, null, ex);
+//                fail(ex.getMessage());
+//            }
+//            db.configure();
+//            source.setDBSetter(db);
+//
+//            File file = new File(fileName);
+//            if (!file.exists()) {
+//                fail("test source file not found");
+//            }
+//            InputStreamReader isr = null;
+//            try {
+//                isr = new InputStreamReader(new FileInputStream(file));
+//                source.open(isr);
+//            } catch (FileNotFoundException ex) {
+//                Logger.getLogger(SourceAndSetterTest.class.getName()).log(Level.SEVERE, null, ex);
+//                fail(ex.getMessage());
+//            }
+//
+//
+//            try {
+//                source.call();
+//            } catch (ExecutionException ex) {
+//                log.log(Level.SEVERE, null, ex);
+//                fail(ex.getMessage());
+//                throw new IllegalArgumentException(ex);
+//            } catch (Exception ex) {
+//                log.log(Level.SEVERE, null, ex);
+//                fail(ex.getMessage());
+//                throw new IllegalArgumentException(ex);
+//            }
+//
+//            log.log(Level.INFO, "db filling completed , read {0} lines", source.lineRead());
+//            Thread.currentThread().sleep(1000);
+//            log.log(Level.INFO, "db filling testing");
+//            try {
+//                isr = new InputStreamReader(new FileInputStream(file));
+//                source.open(isr);
+//            } catch (FileNotFoundException ex) {
+//                Logger.getLogger(SourceAndSetterTest.class.getName()).log(Level.SEVERE, null, ex);
+//                fail(ex.getMessage());
+//            }
+//            IOTestDB testDB = new IOTestDB(db);
+//            source.setDBSetter(testDB);
+//            source.open(isr);
+//            log.info("Testing data");
+//
+//
+//            try {
+//                source.call();
+//            } catch (ExecutionException ex) {
+//                log.log(Level.SEVERE, null, ex);
+//                fail(ex.getMessage());
+//            } catch (Exception ex) {
+//                log.log(Level.SEVERE, null, ex);
+//                fail(ex.getMessage());
+//            }
+//            testDB.close();
+//            log.info("Testing completed");
+//            assertEquals("Failed rows", 0, testDB.failedRows.get());
+//            assertEquals("untested rows", 0, testDB.untestedRows.get());
+//
+//            db.close();
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(SourceAndSetterTest.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//
+//    }
 
     private void CorrectnessTestFrame0(Map<Object, Object> mat) {
 
@@ -264,13 +257,13 @@ public class SourceAndSetterTest {
         }
     }
 
-    private class TestDBSetter implements DBSetter {
+    private class TestDBSetter implements ClusterHandler {
 
         private HashMap<Object, Object> mat = new HashMap();
 
         @Override
         public void close() {
-            // TODO Auto-generated method stub
+            
         }
 
         public Map<Object, Object> getMap() {
@@ -309,9 +302,6 @@ public class SourceAndSetterTest {
             log.log(Level.FINE, "result:{0}", sb.toString());
         }
 
-        @Override
-        public void open(String ClusterName, String location) {
-            // TODO Auto-generated method stub
-        }
+        
     };
 }

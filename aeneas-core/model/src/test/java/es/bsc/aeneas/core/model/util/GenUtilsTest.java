@@ -27,10 +27,10 @@ public class GenUtilsTest {
     public GenUtilsTest() {
       
     }
-    @Before
-    public void before(){
-          GenUtils.setRefmodel("referenceModelTest");
-    }
+//    @Before
+//    public void before(){
+//          GenUtils.setRefmodel("referenceModelTest");
+//    }
 
     
 
@@ -109,10 +109,10 @@ public class GenUtilsTest {
 //
 //    }
 
-    public void testGetCassandraModelFile() throws IOException {
-        URL cassandraModelFile = GenUtils.getCassandraModelFile("test1");
-        assertTrue(cassandraModelFile.openStream().available() > 0);
-    }
+//    public void testGetCassandraModelFile() throws IOException {
+//        URL cassandraModelFile = GenUtils.getCassandraModelFile("test1");
+//        assertTrue(cassandraModelFile.openStream().available() > 0);
+//    }
 
 //    @Test
 //    public void testParseCassandraModel() {
@@ -136,12 +136,12 @@ public class GenUtilsTest {
 //        assertNotNull(q);
 //        assertTrue(q.getQuery().size() > 0);
 //    }
-    @Test
-    public void testGetReferenceModel() {
-        RootType r = GenUtils.getReferenceModel();
-        assertNotNull(r);
-        assertTrue(r.getEntity().size() > 0);
-    }
+//    @Test
+//    public void testGetReferenceModel() {
+//        RootType r = GenUtils.getReferenceModel();
+//        assertNotNull(r);
+//        assertTrue(r.getEntity().size() > 0);
+//    }
 
     @Test
     public void testCompareTypes() {

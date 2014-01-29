@@ -1,17 +1,13 @@
 package es.bsc.aeneas.core.loader.impl;
 
-import com.yammer.metrics.Metrics;
-import com.yammer.metrics.core.Gauge;
+ 
 import es.bsc.aeneas.core.loader.DBSetter;
 import es.bsc.aeneas.core.loader.SourceReader;
 import es.bsc.aeneas.core.rosetta.exceptions.InvalidAddRequest;
 import es.bsc.aeneas.core.rosetta.exceptions.InvalidPutRequest;
 import es.bsc.aeneas.core.rosetta.exceptions.PatternException;
 import es.bsc.aeneas.core.rosetta.exceptions.SourceReadingException;
-import es.bsc.aeneas.model.marshalling.BoxType;
-import es.bsc.aeneas.core.model.marshalling.PointType;
-
-import java.io.BufferedReader;
+ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,6 +16,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import com.yammer.metrics.Metrics;
+import com.yammer.metrics.core.Gauge;
+import es.bsc.aeneas.core.model.BoxType;
+import es.bsc.aeneas.core.model.PointType;
 
 public class EmbeddedSource extends SourceReader {
 

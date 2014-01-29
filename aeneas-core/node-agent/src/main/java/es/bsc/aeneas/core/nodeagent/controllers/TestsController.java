@@ -4,7 +4,7 @@
  */
 package es.bsc.aeneas.core.nodeagent.controllers;
 
-import es.bsc.aeneas.core.nodeagent.repositories.AETestsRepository;
+import es.bsc.aeneas.cassandra.nodeagent.repositories.AETestsRepository;
 import es.bsc.aeneas.core.nodeagent.model.AETest;
 import java.util.List;
 import javax.inject.Inject;

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package es.bsc.aeneas.nodeagent;
+package es.bsc.cassandrabm.nodeagent;
 
 import es.bsc.aeneas.core.nodeagent.MetricsReader;
 import es.bsc.aeneas.core.nodeagent.Recorder;
@@ -32,7 +32,7 @@ public class SimpleNodeAgentTest {
         MetricsReader mr2 = Mockito.mock(MetricsReader.class);
         Configuration c = new BaseConfiguration();
         SimpleNodeAgent s = new SimpleNodeAgent();
-        s.conf = c;
+      
         s.configure();
         s.getMetricsReaders().addAll(Arrays.asList(mr1, mr2));
         s.getRecorders().addAll(Arrays.asList(r));
