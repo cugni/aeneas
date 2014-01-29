@@ -5,6 +5,8 @@
 package es.bsc.aeneas.core.rosetta;
 
 import es.bsc.aeneas.core.model.gen.CrudType;
+import es.bsc.aeneas.core.rosetta.exceptions.TimeoutException;
+import es.bsc.aeneas.core.rosetta.exceptions.UnreachableClusterException;
 
 /**
  *
@@ -14,8 +16,8 @@ public interface Rosetta {
 
     Result getMatching(CrudType crud, String url);
 
-    void init();
+    void init()  throws UnreachableClusterException;
 
-    Result queryAll(CrudType crud, Object[] path) throws Exception;
+    Result queryAll(CrudType crud, Object... path) throws   TimeoutException  ;
     
 }
