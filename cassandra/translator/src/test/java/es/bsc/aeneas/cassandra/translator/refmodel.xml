@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xmlns='http://aeneas.bsc.es/ReferenceModel'
+    xsi:schemaLocation='http://aeneas.bsc.es/ReferenceModel file:/home/ccugnasc/workspace/aeneas/aeneas-core/model/src/main/resources/ReferenceModel.xsd'>
+    <entity name="">
+        <keyType></keyType>
+        <value>
+            <simpleValue collectionType="SIMPLE_TYPE">
+                <ns2:standardType></ns2:standardType>
+            </simpleValue>
+        </value>
+    </entity>
+    <entity name="">
+        <keyType></keyType>
+        <value>
+          
+            <simpleValue collectionType="MAP_TYPE">
+                <ns2:standardType></ns2:standardType>
+            </simpleValue>
+        </value>
+    </entity>
+    <entity name="">
+        <keyType></keyType>
+        <value>
+            <simpleValue collectionType="SIMPLE_TYPE">
+                <ns2:standardType></ns2:standardType>
+            </simpleValue>
+        </value>
+    </entity>
+
+</root>

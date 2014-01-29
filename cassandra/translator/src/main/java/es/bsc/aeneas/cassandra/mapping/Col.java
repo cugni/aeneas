@@ -38,10 +38,8 @@ import es.bsc.aeneas.core.model.util.GenUtils;
 import es.bsc.aeneas.core.model.util.TransformerUtil;
 import es.bsc.aeneas.core.rosetta.Mapping;
 import java.util.ArrayList;
-import java.util.Collection;
-import me.prettyprint.cassandra.serializers.StringSerializer;
-import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
-import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
+import javax.inject.Inject;
+import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.hector.api.beans.AbstractComposite;
 
 /**
@@ -64,20 +62,27 @@ public class Col {
     private ImmutableList<Type> keyTypes = null;
     private ImmutableList<Type> columnNameTypes = null;
     private ImmutableList<Type> valueTypes = null;
-    /*
+    @Inject
+    private RootType referenceModel;
+
+    public RootType getReferenceModel() {
+        return referenceModel;
+    }
+
+    public void setReferenceModel(RootType referenceModel) {
+        this.referenceModel = referenceModel;
+    }
+
+    /**
      * Return the column metadata definition. If the column is composed is for a
      * variable column name return null
      */
-
     Col(CF cf, CassandraMatchType mt) {
 
         this.ct = mt;
         this.cf = cf;
         id = mt.getId();
-
-
-        RootType ref = GenUtils.getReferenceModel();
-        List<EntityType> entity = ref.getEntity();
+        List<EntityType> entity = referenceModel.getEntity();
         SortedMap<Integer, Lev> keyb = new TreeMap<Integer, Lev>();
         SortedMap<Integer, Lev> colb = new TreeMap<Integer, Lev>();
         SortedMap<Integer, Lev> valb = new TreeMap<Integer, Lev>();
@@ -160,7 +165,7 @@ public class Col {
         tvalmap = tvalmapb.build();
         if (valb.isEmpty()) {
             valueType = ValueType.VALUELESS;
-
+            valueSerialiser = BytesArraySerializer.get();
         } else if (valb.size() > 1) {
             valueType = ValueType.COMPOSITE_VALUE;
             valueSerialiser = CompositeSerializer.get();
@@ -347,30 +352,6 @@ public class Col {
         return ct.getRefPath();
     }
 
-    public Object[] getParts(Collection<Mapping> match) {
-        List<Mapping> keymaps = new ArrayList<Mapping>();
-        List<Mapping> colmaps = new ArrayList<Mapping>();
-        List<Mapping> valmaps = new ArrayList<Mapping>();
-        for (Mapping m : match) {
-            String w = m.getDest().getWhere();
-            if (w.equals(CassandraDestTypes.KEY.value())) {
-                keymaps.add(m);
-            } else if (w.equals(CassandraDestTypes.COLUMN_NAME.value())) {
-                colmaps.add(m);
-            } else if (w.equals(CassandraDestTypes.VALUE.value())) {
-                valmaps.add(m);
-            } else {
-                throw new IllegalStateException("Unknown destination type");
-            }
-        }
-        Object[] result = new Object[3];
-        if (keymaps.size() == 1) {
-            checkArgument(this.cf.getKeyType().size() == 1,
-                    "wrong number of key elements");
-            result[0] = cf.keySerializer.toByteBuffer(log)
-        }
-
-    }
     /*
      * How to determine the row key: the list of levels for each column
      * determine the object to use to set the key. The @path is the list of
@@ -380,7 +361,6 @@ public class Col {
      *
      *
      */
-
     public Object getKey(ImmutableList<Mapping> match) {
 
         switch (cf.keyType) {
@@ -526,6 +506,18 @@ public class Col {
             checkArgument(cs.size() > 0);
             return cs;
         }
+    }
+    private String printpath = null;
+
+    public String printPath() {
+        if (printpath == null) {
+         StringBuilder sb = new StringBuilder("/");
+            for (LevelType l : this.getRefPath().getLevel()) {
+                sb.append(l.getName()).append("/");
+            }
+            printpath = sb.toString();
+        }
+        return printpath;
     }
 
     static class Lev {

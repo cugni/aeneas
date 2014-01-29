@@ -35,15 +35,12 @@ public class Cassa {
     Configuration conf;
     private List<Ks> keyspaces = new ArrayList();
     private final Map<String, Col> matches;
-    public final Cluster cluster;
+    public Cluster cluster;
+    public final String name;
+    private final String address;
 
     public Cassa(CassandraClusterType cct) {
-        try {
-            cluster = Loader.getInstance().configureCluster(cct.getName(),
-                    cct.getAddress());
-        } catch (UnreachableClusterException ex) {
-            throw new IllegalStateException("Impossible to init", ex);
-        }
+      
         Table<String, String, Reorder> reorder = HashBasedTable.create();
         List<MatchType> ms = cct.getMatches().getMatch();
         CassandraSettings settings = (CassandraSettings) cct.getSettings();
@@ -55,6 +52,8 @@ public class Cassa {
                 reorder.put(kt.getName(), cf.getName(), r);
             }
         }
+        this.name = cct.getName();
+        this.address=cct.getAddress();
         for (MatchType match : ms) {
             CassandraMatchType cmatch = (CassandraMatchType) match;
             String kname = cmatch.getKeyspaceName();
@@ -77,7 +76,7 @@ public class Cassa {
         }
         ImmutableMap.Builder<String, Col> b = ImmutableMap.builder();
         for (String ksname : reorder.rowKeySet()) {
-            Ks ks = new Ks(this,reorder.row(ksname));
+            Ks ks = new Ks(this, reorder.row(ksname));
             keyspaces.add(ks);
             for (CF cf : ks.cfs) {
                 for (Col col : cf.columns) {
@@ -91,6 +90,15 @@ public class Cassa {
 
 
 
+    }
+    public void initHector(){
+          try {
+            cluster = Loader.getInstance().configureCluster(name,
+                    address);
+            
+        } catch (UnreachableClusterException ex) {
+            throw new IllegalStateException("Impossible to init", ex);
+        }
     }
 
     public Col getMatch(String id) {

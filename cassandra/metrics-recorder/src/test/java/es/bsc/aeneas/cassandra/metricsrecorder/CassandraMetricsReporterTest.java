@@ -4,9 +4,8 @@
  */
 package es.bsc.aeneas.cassandra.metricsrecorder;
 
-import es.bsc.aeneas.cassandra.metricsrecorder.CassandraMetricsReporter;
-import es.bsc.aeneas.cassandra.metricsrecorder.MetricspaceHolder;
-import es.bsc.aeneas.loader.DBSetter;
+import es.bsc.aeneas.core.model.gen.CrudType;
+import es.bsc.aeneas.core.rosetta.Rosetta;
 import org.junit.Test;
 
 import static org.mockito.Mockito.*;
@@ -25,25 +24,25 @@ public class CassandraMetricsReporterTest {
      */
     @Test
     public void testAsyncOne() {
-
-        DBSetter db = mock(DBSetter.class);
+        Rosetta db = mock(Rosetta.class);
         MetricspaceHolder ms = new MetricspaceHolder(db);
         CassandraMetricsReporter c =
-                CassandraMetricsReporter.create("context", "test", ms);
+                new CassandraMetricsReporter("context", "test", ms);
         c.addAsyncMetric("prova", 1);
-        verify(db, never()).put(any(), any());
+        verify(db, never()).queryAll(same(CrudType.CREATE_OR_UPDATE), any());
         c.run();
         c.run();
         //  put(value,context,testname,location,System.currentTimeMillis(),propertyname);
-        verify(db, only()).put(same(1), same("context"), same("test"), any(), any(), same("prova"));
+        verify(db, only()).queryAll(same(CrudType.CREATE_OR_UPDATE),
+                same("context"), same("test"), any(), any(), same("prova"));
 
     }
-
+@Test
     public void testAsyncMultiple() {
-        DBSetter db = mock(DBSetter.class);
+        Rosetta db = mock(Rosetta.class);
         MetricspaceHolder ms = new MetricspaceHolder(db);
         CassandraMetricsReporter c =
-                CassandraMetricsReporter.create("context", "test", ms);
+                new CassandraMetricsReporter("context", "test", ms);
 
 
         c.addAsyncMetric("prova1", 1);
@@ -52,10 +51,10 @@ public class CassandraMetricsReporterTest {
         c.addAsyncMetric("prova4", 4);
         c.run();
 //        verify(db, times(4)).put(any(), same("context"), same("test"), any(), any(), any());
-        verify(db, only()).put(same(1), same("context"), same("test"), any(), any(), same("prova1"));
-        verify(db, only()).put(same(2), same("context"), same("test"), any(), any(), same("prova2"));
-        verify(db, only()).put(same(3), same("context"), same("test"), any(), any(), same("prova3"));
-        verify(db, only()).put(same(4), same("context"), same("test"), any(), any(), same("prova4"));
+        verify(db, only()).queryAll(same(CrudType.READ), same("context"), same("test"), any(), any(), same("prova1"));
+        verify(db, only()).queryAll(same(CrudType.READ), same("context"), same("test"), any(), any(), same("prova2"));
+        verify(db, only()).queryAll(same(CrudType.READ), same("context"), same("test"), any(), any(), same("prova3"));
+        verify(db, only()).queryAll(same(CrudType.READ), same("context"), same("test"), any(), any(), same("prova4"));
 
 
 

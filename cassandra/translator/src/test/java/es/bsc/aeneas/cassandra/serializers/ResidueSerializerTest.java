@@ -4,7 +4,7 @@
  */
 package es.bsc.aeneas.cassandra.serializers;
 
- s
+
 import es.bsc.aeneas.core.model.PointType;
 import es.bsc.aeneas.core.model.ResidueType;
 import org.junit.Test;

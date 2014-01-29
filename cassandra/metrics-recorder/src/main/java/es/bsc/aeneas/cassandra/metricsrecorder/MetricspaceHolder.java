@@ -3,10 +3,12 @@
  * and open the template in the editor.
  */
 package es.bsc.aeneas.cassandra.metricsrecorder;
+ 
 
-import es.bsc.aeneas.loader.DBSetter;
-
-import java.util.logging.Logger;
+import es.bsc.aeneas.core.model.gen.CrudType;
+import es.bsc.aeneas.core.rosetta.Rosetta;
+ import java.util.logging.Logger;
+import javax.inject.Inject;
 
 /**
  * TODO This class has to be completely redesigned 
@@ -16,9 +18,11 @@ import java.util.logging.Logger;
 public class MetricspaceHolder {
 
     private static final Logger log = Logger.getLogger(MetricspaceHolder.class.getName());
-    private final DBSetter db;
+    private final Rosetta db;
 
-    public MetricspaceHolder(DBSetter db) {
+    @Inject
+    public MetricspaceHolder(Rosetta db) {
+
         this.db = db;
     }
 
@@ -48,12 +52,14 @@ public class MetricspaceHolder {
         }
 
         public void stop() {
-                db.put(System.currentTimeMillis(),context,testname,location,"stop");
+                 db.queryAll(CrudType.CREATE_OR_UPDATE,
+                         System.currentTimeMillis(),context,testname,location,"stop");
         
         }
 
         public void start() {
-                  db.put(System.currentTimeMillis(),context,testname,location,"start");
+                   db.queryAll(CrudType.CREATE_OR_UPDATE,
+                           System.currentTimeMillis(),context,testname,location,"start");
         }
 
         public class MetricHolder {
@@ -65,7 +71,8 @@ public class MetricspaceHolder {
             }
 
             public MetricHolder addMetric(String propertyname, Object value) {
-                db.put(value,context,testname,location,System.currentTimeMillis(),propertyname);
+                db.queryAll(CrudType.CREATE_OR_UPDATE,
+                                          value,context,testname,location,System.currentTimeMillis(),propertyname);
                 return this;
             }
  
@@ -83,7 +90,8 @@ public class MetricspaceHolder {
                 }              
 
                 public MetricGroup addMetric(String propertyname, Object value) {
-                   db.put(value,context,testname,location,System.currentTimeMillis(),group+"."+propertyname);                   
+                      db.queryAll(CrudType.CREATE_OR_UPDATE,
+                              context,testname,location,System.currentTimeMillis(),group+"."+propertyname);                   
                    return this;
                 }
             }

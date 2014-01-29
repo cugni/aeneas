@@ -11,6 +11,7 @@
       <module>metrics-recorder</module>
       <module>mapping</module>
     <module>translator</module>
+    <module>node-agent</module>
   </modules>
   <groupId>es.bsc.aeneas.cassandra</groupId>
   <artifactId>ae-cassandra</artifactId>

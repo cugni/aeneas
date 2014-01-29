@@ -8,8 +8,7 @@ import com.yammer.metrics.Metrics;
 import com.yammer.metrics.core.*;
 import com.yammer.metrics.reporting.AbstractPollingReporter;
 import es.bsc.aeneas.cassandra.metricsrecorder.MetricspaceHolder.MetricContext;
-import es.bsc.aeneas.loader.LightXMLCassandraSetter;
-import es.bsc.aeneas.loader.exceptions.UnreachableClusterException;
+
 
 import java.net.InetAddress;
 import java.util.Map.Entry;
@@ -17,8 +16,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 
 /**
  *
@@ -27,42 +26,6 @@ import java.util.logging.Logger;
 public class CassandraMetricsReporter extends AbstractPollingReporter implements MetricProcessor<CassandraMetricsReporter.Context> {
 
     private static final Logger LOG = Logger.getLogger(CassandraMetricsReporter.class.getName());
-    private static AtomicReference<CassandraMetricsReporter> instance = new AtomicReference<CassandraMetricsReporter>();
-
-    /**
-     * *
-     * Ugly but fast
-     *
-     * @return
-     * @deprecated
-     */
-    @Deprecated
-    public static CassandraMetricsReporter getInstance() {
-        return instance.get();
-    }
-
-    public static CassandraMetricsReporter create(String context, String testname, MetricspaceHolder ms) {
-        String location = null;
-        try {
-            location = InetAddress.getLocalHost().getHostName();
-        } catch (Exception ex) {
-            throw new IllegalArgumentException("Impossible to determine the localhost name."
-                    + "Set it manually through the testingnode parameter", ex);
-        }
-        CassandraMetricsReporter cmr = new CassandraMetricsReporter(context, testname, location, ms);
-        instance.set(cmr);
-        return cmr;
-
-    }
-
-    public static CassandraMetricsReporter create(String context, String testname,
-            String serverlocation, String clustername) throws UnreachableClusterException {
-        LightXMLCassandraSetter l = new LightXMLCassandraSetter("metricspace.cm.xml", "MetricsReferenceModel.xml");
-        l.open(clustername, serverlocation);
-        l.configure();
-        MetricspaceHolder ms = new MetricspaceHolder(l);
-        return CassandraMetricsReporter.create(context, testname, ms);
-    }
     public final String testname;
     private final MetricContext mct;
     private final AtomicLong rec_time = new AtomicLong(System.currentTimeMillis());
@@ -74,13 +37,28 @@ public class CassandraMetricsReporter extends AbstractPollingReporter implements
         }
     };
 
-    private CassandraMetricsReporter(String context, String testname, String location, MetricspaceHolder ms) {
+    @Inject
+    public CassandraMetricsReporter(String context, String testname, String location, MetricspaceHolder ms) {
         super(Metrics.defaultRegistry(), "Cassandra-metrics-reporter");
         //: doesn't work good with cassandra-cli
         this.testname = testname.replaceAll(":", "_");
         mct = ms.getMetricContext(context, testname, location);
     }
-    //TODO better dependency injection
+
+    @Inject
+    public CassandraMetricsReporter(String context, String testname, MetricspaceHolder ms) {
+        super(Metrics.defaultRegistry(), "Cassandra-metrics-reporter");
+        //: doesn't work good with cassandra-cli
+        this.testname = testname.replaceAll(":", "_");
+        String location = null;
+        try {
+            location = InetAddress.getLocalHost().getHostName();
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("Impossible to determine the localhost name."
+                    + "Set it manually through the testingnode parameter", ex);
+        }
+        mct = ms.getMetricContext(context, testname, location);
+    }
 
     @Override
     public void start(long period, TimeUnit unit) {

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<g:env
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xmlns:g='http://aeneas.bsc.es/MatchingModel'
+    xmlns:cm='http://aeneas.bsc.es/CassandraModel'
+    xsi:schemaLocation='http://aeneas.bsc.es/MatchingModel file:/home/ccugnasc/workspace/aeneas/aeneas-core/model/src/main/resources/MatchingModel.xsd
+   http://aeneas.bsc.es/CassandraModel file:/home/ccugnasc/workspace/aeneas/cassandra/translator/src/main/resources/CassandraModel.xsd'>
+    <g:cluster xsi:type="cm:CassandraClusterType" name="prova" handlerName="prova" address="localhost:">
+        <g:settings>
+            
+        </g:settings>
+        <g:matches>
+            <g:match id="" crudType="">
+                <g:fixedDests>
+                    <g:fixedDest fixedValue="" fixedValueType="UTF8Type">
+                        <g:dest attr="" where="" from="false" to="false">
+                            <g:transform className="" methodName=""></g:transform>
+                            <g:transform className="" methodName=""></g:transform>
+                            <g:transform className="" methodName=""></g:transform>
+                        </g:dest>
+                    </g:fixedDest>
+                    <g:fixedDest fixedValue="" fixedValueType="UTF8Type">
+                        <g:dest attr="" where="" from="false" to="false">
+                        </g:dest>
+                    </g:fixedDest>
+                    <g:fixedDest fixedValue="" fixedValueType="UTF8Type">
+                        <g:dest attr="" where="" from="false" to="false">
+                        </g:dest>
+                    </g:fixedDest>
+                </g:fixedDests>
+                <g:refPath>
+                    <g:level name="">
+                        <g:dest attr="" where="" from="false" to="false">
+                        </g:dest>
+                        <g:dest attr="" where="" from="false" to="false">
+                        </g:dest>
+                        <g:dest attr="" where="" from="false" to="false">
+                        </g:dest>
+                    </g:level>
+                    <g:level name="">
+                    </g:level>
+                    <g:level name="">
+                    </g:level>
+                </g:refPath>
+            </g:match>
+            <g:match id="" crudType="">
+                <g:fixedDests>
+                    <g:fixedDest fixedValue="" fixedValueType="UTF8Type">
+                        <g:dest attr="" where="" from="false" to="false">
+                        </g:dest>
+                    </g:fixedDest>
+                </g:fixedDests>
+                <g:refPath>
+                    <g:level name="">
+                    </g:level>
+                </g:refPath>
+            </g:match>
+            <g:match id="" crudType="">
+                <g:fixedDests>
+                    <g:fixedDest fixedValue="" fixedValueType="UTF8Type">
+                        <g:dest attr="" where="" from="false" to="false">
+                        </g:dest>
+                    </g:fixedDest>
+                </g:fixedDests>
+                <g:refPath>
+                    <g:level name="">
+                    </g:level>
+                </g:refPath>
+            </g:match>
+        </g:matches>
+    </g:cluster>
+    <g:cluster name="" handlerName="" address="">
+        <g:settings></g:settings>
+        <g:matches>
+        </g:matches>
+    </g:cluster>
+    <g:cluster name="" handlerName="" address="">
+        <g:settings></g:settings>
+        <g:matches>
+        </g:matches>
+    </g:cluster>
+
+</g:env>

@@ -310,4 +310,7 @@ public class CF {
 
         return cfd;
     }
+    public String getUniqueName(){
+        return ks.cassa.name+ks.name+"."+name;
+    }
 }

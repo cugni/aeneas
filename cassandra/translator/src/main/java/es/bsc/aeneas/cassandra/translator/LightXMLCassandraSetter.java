@@ -2,10 +2,8 @@ package es.bsc.aeneas.cassandra.translator;
 
 import es.bsc.aeneas.core.rosetta.exceptions.UnreachableClusterException;
 
-import me.prettyprint.hector.api.ddl.KeyspaceDefinition;
 import java.util.logging.Logger;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.collect.ImmutableList;
 import es.bsc.aeneas.cassandra.mapping.Col;
 import es.bsc.aeneas.core.model.gen.ClusterType;
@@ -27,20 +25,7 @@ public class LightXMLCassandraSetter extends AbstractCassandraDB {
     @Override
     public void init(ClusterType cd) throws UnreachableClusterException {
         super.init(cd);
-        //        if (checkNotNull(cluster, "Is required to call the open method before the configure one")
-        //                .describeKeyspace(ks.name) != null) {
-        //            cluster.dropKeyspace(ks.name, true);
-        //        }
-        //        //Add the schema to the cluster.
-        //        //"true" as the second param means that Hector will block until all nodes see the change.
-        //        cluster.addKeyspace(getKeyspaceDefinition(), true);
-        for (KeyspaceDefinition ks : cassa.createKeyspaceDefinitions()) {
-            if (checkNotNull(cluster, "Is required to call the open method before the configure one")
-                    .describeKeyspace(ks.getName()) == null) {
-                cluster.addKeyspace(ks, true);
-
-            }
-        }
+ 
 
     }
 

@@ -45,11 +45,12 @@ public class AeneasMetricsStorer implements Recorder {
 
     private final static Logger log = Logger.getLogger(AeneasMetricsStorer.class.getName());
     @Inject
-    private final MetricspaceHolder msh;
+    private   MetricspaceHolder msh;
     private final ReadWriteLock l = new ReentrantReadWriteLock();
     @Inject
     private MetricContext mcnt;
-    private final Rosetta rosetta;
+    @Inject
+    private  Rosetta rosetta;
 
     /**
      * This class connects to the reporting cluster and to the node to measure.
@@ -127,14 +128,13 @@ public class AeneasMetricsStorer implements Recorder {
             String context = conf.getString("contextname", "clusternode");
             mcnt = msh.getMetricContext(context, testname, testingnode);
             try {
-                rosetta.open(conf.getString("aneas-recorder.clustername"),
-                        conf.getString("aneas-recorder.clusterlocation"));
-                 rosetta.configure();
+                rosetta.init();                       
+                
             } catch (UnreachableClusterException ex) {
                 Logger.getLogger(AeneasMetricsStorer.class.getName()).log(Level.SEVERE, null, ex);
                 throw new IllegalArgumentException("Unreachable Cluster", ex);
             }
-            rosetta.configure();
+            
         } finally {
             writeLock.unlock();
         }
