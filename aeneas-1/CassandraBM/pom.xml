@@ -10,7 +10,6 @@
         <module>model</module>
         <module>loader</module>        
         <module>workloader</module>
-        <module>distribution-analyzer</module>
         <module>node-agent</module>
          <module>codeGenerator</module>
         <module>cassandra-metrics-recorder</module>
