@@ -1,18 +1,14 @@
-/code-generator/target/
-/cassandra/cassandra-metrics-recorder/target/
-/cassandra/cassandra-datamodel/target/
-/cassandra/datamodel/target/
-/cassandra/metrics-recorder/target/
-/cassandra/mapping/target/
-/core/code-generator/target/
-/core/commons/target/
-/core/loader/target/
-/core/model/target/
-/core/workloader/target/
-/aeneas-core/code-generator/target/
-/aeneas-core/commons/target/
-/aeneas-core/loader/target/
-/aeneas-core/model/target/
-/aeneas-core/workloader/target/
-/cassandra/translator/target/
-/aeneas-core/rosetta/target/
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.next
+release.properties
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
