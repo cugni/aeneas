@@ -164,6 +164,24 @@ Aeneas has been presented at the 2013 International Conference on Computational 
 
 At [http://www.slideshare.net/CesareCugnasco/aeneas-an-extensible-nosql-enhancing-application-system](http://www.slideshare.net/CesareCugnasco/aeneas-an-extensible-nosql-enhancing-application-system) there are the slides made for a seminary held at the Universitat Politècnica de Catalunya in November 2013.
 
+
 #Acknowledgements
 
-This work is partially supported by the BSC-CNS Severo Ochoa program and the TIN2012-34557 project, with funding from the Spanish Ministry of Economy and Competitivity and the European Union’s FEDER founds.
+This work is partially supported by the **BSC-CNS Severo Ochoa** program and the TIN2012-34557 project, with funding from the **Spanish Ministry of Economy and Competitivity** and the European Union’s **FEDER founds**.
+
+
+#License
+
+Copyright 2014  Barcelona Supercomputing Center
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
