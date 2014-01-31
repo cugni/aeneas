@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:keyspace xmlns:tns="http://cassamdrabm.bsc.es/CassandraModel" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xmlns:cmt="http://cassamdrabm.bsc.es/CommonTypes"
+	      xsi:schemaLocation="http://cassamdrabm.bsc.es/CassandraModel CassandraModel.xsd"
+              name="RP2NormLevelPerfect">            
+    <tns:strategy>SimpleStrategy</tns:strategy>
+    <tns:replicationFactor>2</tns:replicationFactor>
+
+      <tns:columnFamily name="points">
+           <tns:column name="points">
+           
+            <tns:refPath > <!-- This indicates to use the value as column name -->
+                <tns:level value="frame">
+                   <tns:columnDest position="0"/>
+                </tns:level>
+                <tns:level value="points"/>                
+                <tns:level value="index">
+                     <tns:keyDest position="0"/>
+                </tns:level>                 
+         
+            </tns:refPath>             
+        </tns:column>
+    </tns:columnFamily>
+</tns:keyspace>

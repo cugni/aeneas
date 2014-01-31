@@ -1,0 +1,1 @@
+/home/ccugnasc/workspace/CassandraBM/CassandraBM/loader/test.txt

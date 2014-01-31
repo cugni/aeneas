@@ -1,0 +1,18 @@
+In this path you have to save your configuration files.
+You have to follow the following naming convention. 
+One xml file, implementing the ReferenceModel.xsd schema should be named 
+referenceModel.xml.
+One mxl file, implementing the QueryModel.xsd schema should be named queryModel.xml.
+For each experiment XXX experiment you want to perform you have to create two file. 
+The first one, implementing the CassandraModel.xsd should be named XXX.cm.xml while
+the second one, implementing the QueryImplementation.xsd should be named XXX.qi.xml.
+
+An example of structure could be
+src/main/resources:
+-referenceModel.xml
+-queryModel.xml
+-experiment1.cm.xml
+-experiment1.ci.xml
+-experiment2.cm.xml
+-exteriment2.ci.xml
+-.... others xsd. files

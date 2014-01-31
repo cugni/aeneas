@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <system/>
+    <scheduler>
+        <timeunit>seconds</timeunit>
+        <interval>5</interval>
+    </scheduler>
+    <httpserver>
+        <listenport>2626</listenport>      
+        <threads>10</threads>
+    </httpserver>
+    
+    <!--    <cassandra>
+        <port>9160</port>
+        <jmxport>7199</jmxport>
+    </cassandra>
+    <aneas-recorder>
+        <clustername>AeneasTesting</clustername>
+        <clusterlocation>localhost:9160</clusterlocation>
+    </aneas-recorder>
+    <iostat-reader>
+        <deviceregexp>sda1</deviceregexp>
+    </iostat-reader>  
+    -->
+    <garbagecollector>
+        <name>ConcurrentMarkSweep</name>
+    </garbagecollector> 
+    <cassandra>
+        <port>9160</port>
+        <jmxport>7199</jmxport>
+    </cassandra>
+    <aneas-recorder>
+        <clustername>Test Cluster</clustername>
+        <clusterlocation>localhost:9160</clusterlocation>
+    </aneas-recorder>
+    <iostat-reader>
+        <deviceregexp>sda</deviceregexp>
+    </iostat-reader> 
+    <netstat-reader>
+        <interfaceregexp>eth0</interfaceregexp>
+    </netstat-reader>                  
+</configuration>

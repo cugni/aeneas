@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:root xmlns:tns="http://cassamdrabm.bsc.es/ReferenceModel"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:cmt="http://cassamdrabm.bsc.es/CommonTypes"
+          xsi:schemaLocation="http://cassamdrabm.bsc.es/ReferenceModel  ReferenceModel.xsd">
+    <tns:entity name="context" >
+        <tns:keyType>UTF8Type</tns:keyType>
+        <tns:value>
+            <tns:nodeValue>
+                <tns:entity name="testname" >
+                    <tns:keyType>UTF8Type</tns:keyType>
+                    <tns:value>
+                        <tns:nodeValue>
+                            <tns:entity name="location" >
+                                <tns:keyType>UTF8Type</tns:keyType>
+                                <tns:value>
+                                    <tns:nodeValue>
+                                        <tns:entity name="time" >
+                                            <tns:keyType>LongType</tns:keyType>
+                                            <tns:value>
+                                                <tns:nodeValue>
+                                                         <tns:entity name="attribute" >
+                                                        <tns:keyType>UTF8Type</tns:keyType>
+                                                        <tns:value>
+                                                            <tns:simpleValue>
+                                                                <cmt:standardType>Int32Type</cmt:standardType>
+                                                            </tns:simpleValue>  
+                                                            <tns:simpleValue>
+                                                                <cmt:standardType>DoubleType</cmt:standardType>
+                                                            </tns:simpleValue>
+                                                            <tns:simpleValue>
+                                                                <cmt:standardType>UTF8Type</cmt:standardType>
+                                                            </tns:simpleValue>
+                                                        </tns:value>
+                                                    </tns:entity>
+                                                </tns:nodeValue>
+                                            </tns:value>
+                                        </tns:entity>
+                                    </tns:nodeValue>
+                                    <tns:nodeValue>
+                                        <tns:entity name="start" >
+                                            <tns:keyValue>start</tns:keyValue>
+                                            <tns:value>
+                                                <tns:simpleValue>
+                                                    <cmt:standardType>LongType</cmt:standardType>
+                                                </tns:simpleValue>
+                                            </tns:value>
+                                        </tns:entity>
+                                    </tns:nodeValue>
+                                    <tns:nodeValue>
+                                        <tns:entity name="stop" >
+                                            <tns:keyValue>start</tns:keyValue>
+                                            <tns:value>
+                                                <tns:simpleValue>
+                                                    <cmt:standardType>LongType</cmt:standardType>
+                                                </tns:simpleValue>
+                                            </tns:value>
+                                        </tns:entity>
+                                    </tns:nodeValue>
+                                </tns:value>
+                            </tns:entity>
+                        </tns:nodeValue>
+                    </tns:value>
+                </tns:entity>
+            </tns:nodeValue>
+        </tns:value>
+    </tns:entity>
+</tns:root>

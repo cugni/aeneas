@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+        targetNamespace="http://cassamdrabm.bsc.es/CassandraModel" 
+        xmlns:tns="http://cassamdrabm.bsc.es/CassandraModel" elementFormDefault="qualified"
+        xmlns:cmt="http://cassamdrabm.bsc.es/CommonTypes">
+    <import namespace="http://cassamdrabm.bsc.es/CommonTypes" schemaLocation="CommonTypes.xsd"/>
+    <complexType name="KeyspaceType">
+        <sequence>
+            <element name="strategy" type="tns:StrategyType"></element>
+            <element name="replicationFactor" type="int"></element>
+            <element name="columnFamily" type="tns:ColumnFamilyType"
+                     maxOccurs="unbounded">
+            </element>
+        </sequence>
+        <attribute name="name" type="string" use="required"></attribute>
+    </complexType>
+    <element name="keyspace" type="tns:KeyspaceType"></element>
+    <complexType name="ColumnFamilyType">
+        <sequence>       
+            <element name="consistency" minOccurs="0" type="tns:ConsistencyType"/>
+            <element name="keyCacheSize" minOccurs="0" type="double"/>
+            <element name="keyCachePeriod" minOccurs="0" type="int">
+                <annotation>
+                    <documentation>Row cache save period in seconds</documentation>
+                </annotation>
+            </element>
+            <element name="rowCacheSize" minOccurs="0" type="double"/>
+            <element name="rowCachePeriod" minOccurs="0" type="int">
+                <annotation>
+                    <documentation>Row cache save period in seconds</documentation>
+                </annotation>
+            </element>
+<!--           <element name="columnSorter" type="tns:ColumnSorterType"></element>
+            <element name="key"  type="cmt:SuperType">
+                
+            </element>-->
+            <element name="fixedRow" type="tns:FixedRowType"
+                     minOccurs="0" maxOccurs="unbounded">
+            </element>
+            <element name="column" type="tns:ColumnType"
+                     maxOccurs="unbounded" minOccurs="0">
+            </element>
+        </sequence>
+        <attribute name="name" type="string" use="required"></attribute>
+    </complexType>
+    <complexType name="FixedColumnName">
+        <complexContent>
+            <extension base="cmt:namedType">
+                <attribute name="position" type="int" default="0" />
+            </extension>
+        </complexContent>
+        
+    </complexType>
+    <complexType name="ColumnType">
+        <sequence>
+            <element name="fixedColumnName" type="tns:FixedColumnName" minOccurs="0">
+                <annotation>
+                    <documentation>The value of the name would be parsed using the type and used as generic column name</documentation>
+                </annotation>
+            </element>
+            <element name="refPath" type="tns:refPathType"></element>
+            <element name="valueless" minOccurs="0"></element>           
+        </sequence>
+       
+        <attribute name="name" default="">
+            <annotation>
+                <documentation>
+                    The attribute name is not used by the framework. It is defined only to provide a memonic handler to the developer
+                </documentation>
+            </annotation>
+           
+        </attribute>
+        <attribute name="index" default="false" type="boolean"></attribute>
+    </complexType>
+    <simpleType name="ClassNameType">
+        <restriction base="string"></restriction>
+    </simpleType>
+
+
+    <complexType name="FixedRowType">
+        <sequence>
+            <element name="key" type="cmt:fixedType" maxOccurs="unbounded"></element>
+            <element name="column" type="tns:ColumnType" maxOccurs="unbounded"></element>
+        </sequence>
+    </complexType>
+
+
+
+
+    <simpleType name="StrategyType">
+        <restriction base="string">
+            <enumeration value="SimpleStrategy"></enumeration>
+            <enumeration value="NetworkTopologyStrategy"></enumeration>
+            <enumeration value="OldNetworkTopologyStrategy"></enumeration>
+        </restriction>
+    </simpleType>
+
+    <complexType name="refPathType">
+    
+        <sequence>
+            <element name="level" type="tns:levelType" maxOccurs="unbounded"></element>
+            <element name="keyDest" type="tns:KeyDest" minOccurs="0" maxOccurs="unbounded" />
+            <element name="columnDest" type="tns:ColumnDest" minOccurs="0" maxOccurs="unbounded"/>
+            <element name="valueDest" type="tns:ValueDest" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+        
+    </complexType>
+    <complexType name="KeyDest" >
+        <complexContent>
+            <extension base="tns:Dest"/>
+        </complexContent>
+    </complexType>
+    <complexType name="ColumnDest" >
+        <complexContent>
+            <extension base="tns:Dest"/>
+        </complexContent>
+    </complexType>
+    <complexType name="ValueDest" >
+        <complexContent>
+            <extension base="tns:Dest"/>
+        </complexContent>
+    </complexType>
+    
+    <complexType name="Dest">
+        
+        <sequence>
+            <element name="clusterer" type="tns:clustererType" minOccurs="0" maxOccurs="1" />
+        </sequence>
+        <attribute name="position" type="int" use="required"></attribute>
+        <attribute name="attr" type="string" use="optional" default="" />
+    </complexType>
+    <complexType name="clustererType">
+        <attribute name="from" type="string" use="required" />
+        <attribute name="to" type="string" use="required" />
+        <attribute name="intervals" type="integer" use="required" />
+        <attribute name="className" type="string" use="optional" />
+    </complexType>
+    <simpleType name="ConsistencyType">
+        <restriction base="string">
+            <enumeration value="ANY" />
+            <enumeration value="ONE" />
+            <enumeration value="TWO" />
+            <enumeration value="THREE" />
+            <enumeration value="LOCAL_QUORUM" />
+            <enumeration value="EACH_QUORUM" />
+            <enumeration value="QUORUM" />
+            <enumeration value="ALL" />
+
+        </restriction>
+      
+    </simpleType>
+
+    <complexType name="levelType">
+        <sequence>
+            <element name="keyDest" type="tns:KeyDest" minOccurs="0" maxOccurs="unbounded" />
+            <element name="columnDest" type="tns:ColumnDest" minOccurs="0" maxOccurs="unbounded"/>
+            <element name="valueDest" type="tns:ValueDest" minOccurs="0" maxOccurs="unbounded"/>
+            
+        </sequence>
+        <attribute name="value" type="string" use="required"></attribute>
+    </complexType>
+</schema>

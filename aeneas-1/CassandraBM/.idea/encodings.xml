@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
+    <file url="file://$PROJECT_DIR$/cassandra-datamodel" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/cassandra-metrics-recorder" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/codeGenerator" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/commons" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/distribution-analyzer" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/metrics-analyzer" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/model" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/node-agent" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/workloader" charset="UTF-8" />
+  </component>
+</project>
+

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/CassandraBM.iml" filepath="$PROJECT_DIR$/CassandraBM.iml" group="CassandraBM and modules" />
+      <module fileurl="file://$PROJECT_DIR$/cassandra-metrics-recorder.iml" filepath="$PROJECT_DIR$/cassandra-metrics-recorder.iml" group="CassandraBM and modules" />
+      <module fileurl="file://$PROJECT_DIR$/cassandradatamodel.iml" filepath="$PROJECT_DIR$/cassandradatamodel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/codeGenerator.iml" filepath="$PROJECT_DIR$/codeGenerator.iml" group="CassandraBM and modules" />
+      <module fileurl="file://$PROJECT_DIR$/commons.iml" filepath="$PROJECT_DIR$/commons.iml" group="CassandraBM and modules" />
+      <module fileurl="file://$PROJECT_DIR$/distribution-analyzer.iml" filepath="$PROJECT_DIR$/distribution-analyzer.iml" group="CassandraBM and modules" />
+      <module fileurl="file://$PROJECT_DIR$/loader.iml" filepath="$PROJECT_DIR$/loader.iml" group="CassandraBM and modules" />
+      <module fileurl="file://$PROJECT_DIR$/metricsanalyzer.iml" filepath="$PROJECT_DIR$/metricsanalyzer.iml" group="CassandraBM and modules" />
+      <module fileurl="file://$PROJECT_DIR$/model.iml" filepath="$PROJECT_DIR$/model.iml" group="CassandraBM and modules" />
+      <module fileurl="file://$PROJECT_DIR$/node-agent.iml" filepath="$PROJECT_DIR$/node-agent.iml" group="CassandraBM and modules" />
+      <module fileurl="file://$PROJECT_DIR$/workloader.iml" filepath="$PROJECT_DIR$/workloader.iml" group="CassandraBM and modules" />
+    </modules>
+  </component>
+</project>
+

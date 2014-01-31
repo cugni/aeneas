@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: es.bsc.aeneas.loader.loader.SourceAndSetterTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 12.799 sec

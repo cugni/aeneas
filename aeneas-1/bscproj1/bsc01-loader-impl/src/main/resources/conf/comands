@@ -1,0 +1,2 @@
+load-data src/main/resources/cassandra1.cm.xml test.txt
+load-data src/main/resources/cassandra1.cm.xml CesareTrajectory.txt

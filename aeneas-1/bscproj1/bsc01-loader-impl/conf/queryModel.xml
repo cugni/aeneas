@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:model xmlns:tns="http://cassamdrabm.bsc.es/QueryModel" 
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+           xmlns:cmt="http://cassamdrabm.bsc.es/CommonTypes"
+           xsi:schemaLocation="http://cassamdrabm.bsc.es/QueryModel QueryModel.xsd">
+    
+    <tns:queries name="getAtomsSlice">
+        <tns:input     name="point" interval="true">
+            <cmt:standardType>Int32Type</cmt:standardType>
+            <tns:inputRange from="0" to="8000"/>
+        </tns:input>
+        <tns:returnType name="points" collectionType="TABLE_TYPE">
+            <cmt:customType>es.bsc.cassandrabm.model.marshalling.PointType</cmt:customType>
+        </tns:returnType>
+    </tns:queries>
+   
+</tns:queries>
+</tns:model>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://cassamdrabm.bsc.es/QueryImplementation"
+        elementFormDefault="qualified"
+        xmlns:tns="http://cassamdrabm.bsc.es/QueryImplementation" 
+        xmlns:cmt="http://cassamdrabm.bsc.es/CommonTypes">
+
+    <import schemaLocation="CommonTypes.xsd" namespace="http://cassamdrabm.bsc.es/CommonTypes"></import>
+    <element name="model">
+        <complexType>
+            <sequence>
+                <element name="query" type="tns:queryImplType"
+                         maxOccurs="unbounded" minOccurs="1">
+                    <key name="varNames">
+                        <selector xpath="model/query/var"/>
+                        <field xpath="@name"/>
+                                 
+                    </key>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+
+    <complexType name="queryImplType">
+       
+		<!-- Set key reference beetween vars name and setResults values-->
+        <sequence>
+            
+            <element name="var" type="tns:varType" maxOccurs="unbounded"
+                     minOccurs="0">
+            </element>
+            <choice>
+                <element name="notImplemented"/>
+           		<!--Declaration of all the variable (Input, output and temporary) used-->
+                
+                <element name="getRow" type="tns:getRowType"
+                         maxOccurs="unbounded" minOccurs="1">
+                </element>
+           
+            </choice>
+        </sequence>
+        <attribute name="name" type="string" use="required"></attribute>
+    </complexType>
+
+    <complexType name="tempDataType">
+        <attribute name="name" type="string"></attribute>
+    </complexType>
+
+    <complexType name="getRowType">
+        <sequence>
+            <choice>
+                <element name="key" type="tns:composekeyType"></element>
+                <element name="rangeKey" type="tns:rangeKeyType"
+                         minOccurs="1" maxOccurs="1">
+                </element>
+            </choice>
+            <element name="foreachColumn" type="tns:foreachColumnType"
+                     maxOccurs="unbounded" minOccurs="0">
+            </element>
+
+        </sequence>
+        <attribute name="columnFamily" type="string" use="required"></attribute>
+        <attribute name="fetchAllrow" type="boolean" use="optional"/>
+    </complexType>
+    <complexType name="composekeyType">
+        <choice>
+            <element name="simple" type="tns:qkeyType"></element>
+            <element name="composed" type="tns:qkeyType"
+                     maxOccurs="unbounded" minOccurs="1">
+            </element>
+          
+        </choice>
+    </complexType>
+    <complexType name="qkeyType">
+        <choice>
+            <element name="varRef" type="string"></element>
+            <element name="fixed" type="cmt:fixedType"/>
+        </choice>
+    </complexType>
+    
+
+    <complexType name="varType">
+        <complexContent>
+            <extension base="cmt:namedType">
+                <attribute name="scope" use="required" type="tns:scopeType">
+                   
+                </attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+    <simpleType name="scopeType">
+        <restriction base="string">
+            <enumeration value="INPUT_VAR" />
+            <enumeration value="OUTPUT_VAR" />
+            <enumeration value="TMP_VAR" />
+        </restriction>
+    </simpleType>
+    <complexType name="foreachColumnType">
+        <sequence>
+            <choice>
+                <element name="columnName" type="tns:composekeyType"></element>
+                <element name="columnNameRange"
+                         type="tns:rangeKeyType">
+                </element>
+                <element name="selectAll" type="cmt:Type"/>
+                
+            </choice>
+            
+            <element minOccurs="0" name="setResultKey" type="string"></element>
+            <element minOccurs="0" name="setResultColumnName"
+                     type="string">
+            </element>
+            <element minOccurs="0" name="setResultColumnValue"
+                     type="string">
+            </element>
+            
+        </sequence>
+    </complexType>
+    
+    <complexType name="rangeKeyType">
+        <sequence>
+            <element name="from" type="tns:composekeyType"></element>
+            <element name="to" type="tns:composekeyType"></element>
+        </sequence>
+        <attribute name="discretize" type="boolean" default="false" />
+    </complexType>
+</schema>

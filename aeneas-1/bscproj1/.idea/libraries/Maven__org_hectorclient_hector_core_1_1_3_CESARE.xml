@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.hectorclient:hector-core:1.1-3-CESARE">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/hectorclient/hector-core/1.1-3-CESARE/hector-core-1.1-3-CESARE.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/hectorclient/hector-core/1.1-3-CESARE/hector-core-1.1-3-CESARE-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/hectorclient/hector-core/1.1-3-CESARE/hector-core-1.1-3-CESARE-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

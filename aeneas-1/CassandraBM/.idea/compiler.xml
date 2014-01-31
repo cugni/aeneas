@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <option name="DEFAULT_COMPILER" value="Javac" />
+    <resourceExtensions />
+    <wildcardResourcePatterns>
+      <entry name="!?*.java" />
+      <entry name="!?*.form" />
+      <entry name="!?*.class" />
+      <entry name="!?*.groovy" />
+      <entry name="!?*.scala" />
+      <entry name="!?*.flex" />
+      <entry name="!?*.kt" />
+      <entry name="!?*.clj" />
+    </wildcardResourcePatterns>
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="false">
+        <processorPath useClasspath="true" />
+      </profile>
+      <profile default="false" name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="cassandra-metrics-recorder" />
+        <module name="cassandradatamodel" />
+        <module name="codeGenerator" />
+        <module name="commons" />
+        <module name="distribution-analyzer" />
+        <module name="loader" />
+        <module name="metricsanalyzer" />
+        <module name="model" />
+        <module name="node-agent" />
+        <module name="workloader" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="cassandra-metrics-recorder" target="1.6" />
+      <module name="CassandraBM" target="1.6" />
+      <module name="cassandradatamodel" target="1.6" />
+      <module name="codeGenerator" target="1.6" />
+      <module name="commons" target="1.6" />
+      <module name="distribution-analyzer" target="1.6" />
+      <module name="loader" target="1.6" />
+      <module name="metricsanalyzer" target="1.6" />
+      <module name="model" target="1.6" />
+      <module name="node-agent" target="1.6" />
+      <module name="workloader" target="1.6" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
+

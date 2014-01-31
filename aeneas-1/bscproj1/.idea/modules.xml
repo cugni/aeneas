@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/bsc01loaderimpl.iml" filepath="$PROJECT_DIR$/bsc01loaderimpl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bsc01workloader.iml" filepath="$PROJECT_DIR$/bsc01workloader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bscproj01.iml" filepath="$PROJECT_DIR$/bscproj01.iml" />
+    </modules>
+  </component>
+</project>
+

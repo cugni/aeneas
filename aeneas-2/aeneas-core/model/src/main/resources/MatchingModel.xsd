@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+        targetNamespace="http://aeneas.bsc.es/MatchingModel" 
+        xmlns:tns="http://aeneas.bsc.es/MatchingModel" elementFormDefault="qualified"
+        xmlns:cmt="http://aeneas.bsc.es/CommonTypes">
+    <import namespace="http://aeneas.bsc.es/CommonTypes" schemaLocation="CommonTypes.xsd"/>
+    
+    <element name="env" type="tns:EnvType">   </element> 
+        
+    <complexType name="EnvType">
+        <sequence>
+            <element name="cluster" type="tns:ClusterType" minOccurs="1" maxOccurs="unbounded"></element>
+        </sequence>
+    </complexType>
+    
+    <complexType name="ClusterType"  abstract="true">
+        <sequence >
+            <element name="settings" type="tns:SettingsType" minOccurs="0" >
+               
+            </element>  
+            <element name="matches">
+                <complexType>
+                    <sequence>
+                        <element name="match" type="tns:MatchType"
+                                 maxOccurs="unbounded" minOccurs="0">
+                            <key name="matchid">
+                                <selector xpath="match/id">
+                                </selector>
+                                <field xpath="."/>
+                            </key>
+                        </element>
+                    </sequence>
+                </complexType>
+            </element>  
+        </sequence>
+        <attribute name="name" type="string" use="required"></attribute>
+        <attribute name="handlerName" type="string" use="required"></attribute>       
+       
+        <attribute name="address" type="string" use="required"></attribute>
+    </complexType>
+    
+
+      
+    <complexType name="SettingsType" abstract="true">
+        <sequence></sequence>   
+    </complexType>
+    <complexType name="MatchType">
+        <sequence>
+            <element name="fixedDests" minOccurs="0">
+                <complexType>
+                    <sequence>
+                        <element name="fixedDest" type="tns:FixedDest"  minOccurs="1" maxOccurs="unbounded"  >
+                            
+                        </element>
+                    </sequence>
+                </complexType>                
+            </element>                        
+            <element name="refPath" type="tns:refPathType"></element>               
+        </sequence>       
+        <attribute name="id" type="string"/>
+        <attribute name="crudType" use="required" type="tns:CrudType"/>
+    </complexType>
+    <simpleType name="CrudType">
+        <restriction base="string"> 
+            <enumeration value="CREATE"/>
+            <enumeration value="READ"/>
+            <enumeration value="UPDATE"/>
+            <enumeration value="DELETE"/>
+            <enumeration value="CREATE_OR_UPDATE"/>
+            <enumeration value="READ_OR_DELETE"/>
+            <enumeration value="READ_LIST"/>
+        </restriction>
+    </simpleType>
+    <complexType name="refPathType">    
+        <sequence>
+            <element name="level" type="tns:levelType" maxOccurs="unbounded"></element>            
+        </sequence>        
+    </complexType>
+    <complexType name="levelType">
+        <sequence>
+            <element name="dest" type="tns:DestType" minOccurs="0" maxOccurs="unbounded" />
+        </sequence>
+        <attribute name="name" type="string" use="required"></attribute>
+    </complexType>
+    <complexType name="DestType" abstract="true">
+        <sequence>
+            <element name="transform" type="tns:TransformType" minOccurs="0" maxOccurs="unbounded" />
+        </sequence>
+        <attribute name="attr" type="string" use="optional" default="" />
+        <attribute name="where" type="string" use="required"  />
+        <attribute name="from" type="boolean" use="optional" default="false"  />
+        <attribute name="to" type="boolean" use="optional" default="false"  />
+        
+    </complexType> 
+    
+    <complexType name="FixedDest">
+        <sequence>
+            <element name="dest" type="tns:DestType"  minOccurs="1" maxOccurs="1"  />
+        </sequence>         
+        <attribute name="fixedValue" use="required" type="string"></attribute>
+        <attribute name="fixedValueType" default="UTF8Type" type="cmt:standardType"></attribute>
+    </complexType> 
+    <complexType name="TransformType">
+        <attribute name="className" type="string"  use="required" />
+        <attribute name="methodName" type="string" use="required"  />        
+    </complexType>
+    <complexType name="ClustererType">
+        <complexContent>
+            <extension base="tns:clType">
+                <attribute name="from" type="string" use="required" />
+                <attribute name="to" type="string" use="required" />
+                <attribute name="intervals" type="integer" use="required" />        
+            </extension>
+        </complexContent>
+    </complexType>
+    
+    <complexType name="clType">
+        <complexContent>
+            <restriction base="tns:TransformType">
+                <attribute name="methodName" use="required" type="string" fixed="getGroup"  />        
+            </restriction>        
+        </complexContent>
+    </complexType>
+     
+</schema>

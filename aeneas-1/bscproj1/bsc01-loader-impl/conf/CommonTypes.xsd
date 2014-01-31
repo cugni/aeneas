@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://cassamdrabm.bsc.es/CommonTypes"
+        xmlns:cmt="http://cassamdrabm.bsc.es/CommonTypes"
+        elementFormDefault="qualified">
+    <complexType name="Type">
+        <choice>
+            <element name="standardType" type="cmt:standardType">
+			
+            </element>
+            <element name="customType" type="cmt:customType">
+				
+            </element>
+        </choice>
+        <attribute name="collectionType" use="optional"
+                   default="SIMPLE_TYPE" type="cmt:CollectionType">
+					
+        </attribute>
+    </complexType>
+    <complexType name="SuperType">
+        <choice>
+            <element name="singleType" type="cmt:Type" maxOccurs="1" minOccurs="1"></element>
+            <element name="multiType" type="cmt:Type" maxOccurs="unbounded" minOccurs="1"></element>
+        </choice>
+    </complexType>
+    <simpleType name="CollectionType">
+        <restriction base="string">
+            <enumeration value="SIMPLE_TYPE" />
+            <enumeration value="LIST_TYPE" />
+            <enumeration value="MAP_TYPE" />
+            <enumeration value="TABLE_TYPE" />
+        </restriction>
+    </simpleType>
+    <simpleType name="customType">
+        <restriction base="string">
+						<!-- 		<pattern value="^(([A-Za-z])+.)+[A-Z]([A-Za-z])+$"></pattern> -->
+        </restriction>
+    </simpleType>
+    <simpleType name="standardType">
+        <restriction base="string">
+            <enumeration value="AsciiType"></enumeration>
+            <enumeration value="BytesType"></enumeration>
+            <enumeration value="Int32Type"></enumeration>
+            <enumeration value="BigIntegerType"></enumeration>
+            <enumeration value="LexicalUUIDType"></enumeration>
+            <enumeration value="LocalByPartionerType"></enumeration>
+            <enumeration value="LongType"></enumeration>
+            <enumeration value="TimeUUIDType"></enumeration>
+            <enumeration value="UTF8Type"></enumeration>
+			<!--<enumeration value="CompositeType"></enumeration> -->
+            <enumeration value="DynamicCompositeType"></enumeration>
+            <enumeration value="UUIDType"></enumeration>
+            <enumeration value="CounterColumnType"></enumeration>
+            <enumeration value="DoubleType"></enumeration>
+        </restriction>	
+    </simpleType>
+
+    <complexType name="namedType">
+        <complexContent>
+            <extension base="cmt:Type">
+                <attribute name="name" type="string" use="required"></attribute>
+            </extension>
+        </complexContent>
+    </complexType>
+    
+    <complexType name="fixedType">
+           
+        <simpleContent>
+            <extension base="string">
+                <attribute name="type" type="cmt:standardType" use="required" />
+            </extension>
+        </simpleContent>
+    </complexType>
+    
+</schema>

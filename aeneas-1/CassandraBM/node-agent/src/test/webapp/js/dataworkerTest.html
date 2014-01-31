@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>dataworker test</title>
+        <link rel="stylesheet" href="../css/qunit.css">
+    </head>
+    <body>
+        <div id="qunit"></div>
+        <div id="qunit-fixture"></div>
+        <script src="qunit-1.12.0.js"></script>
+        <script src="../../../main/webapp/js/parallel.js"></script>
+
+        <script src="../../../main/webapp/js/jquery-1.9.1.min.js"></script>
+        <script src="../../../main/webapp/js/dataworker.js"></script>
+
+        <script type="text/javascript">
+            $(function() {
+                var d = [
+                    ["test1", "metric1", "node1", "01/01/2012", 1],
+                    ["test1", "metric1", "node1", "01/01/2012", 4],
+                    ["test1", "metric2", "node1", "01/01/2012", 3],
+                    ["test1", "metric1", "node1", "01/01/2012", 0],
+                ];
+                for (var i = 0; i < 1000000; i++) {
+                    d.push(["test1", "metric1", "node1", "01/01/2012", 3]);
+                }
+
+                test('clusterer function test', function() {
+
+                    var r = clusterer(d, {nclusters: 1});
+                    equal(r.length, 1, "one cluster only");
+                    equal(r[0].data.length, d.length, "one cluster only with all the elements");
+
+                    r = clusterer(d, {nclusters: 10});
+
+                    equal(r.length, 10, "10 clusters");
+                    var sum = 0;
+                    for (var i = 0; i < 10; i++) {
+                        sum += r[i].data.length;
+                    }
+
+                    equal(d.length, sum, "all elements are present")
+                });
+                function log() {
+                    console.log(arguments);
+                }
+                d = [];
+                var nrows = 20;
+                for (var i = 0; i < nrows; i++) {
+                    d.push(["test1", "metric1", "node1", "01/01/2012", i]);
+                    d.push(["test1", "metric2", "node1", "01/01/2012", i + 10]);
+                }
+                Ae.avg(d, function(res) {
+                    test("test avg", function(  ) {
+                        equal(res.length, 2, "right number of elements eval normale");
+                        equal(res[1][4], (nrows - 1) / 2, "avg first rows");
+                        equal(res[0][4], (nrows - 1) / 2 + 10, "avg second rows");
+                        console.log("test avg result", res);
+                    });
+                });
+
+                d = [
+                    ["test1", "metric2", "node1", "01/01/2012", -210],
+                    ["test1", "metric2", "node1", "01/01/2012", 10]
+                ];
+                for (var i = 0; i < 100000; i++) {
+                    d.push(["test1", "metric1", "node1", "01/01/2012", i + 26]);
+                }
+                  
+                Ae.median(d, function(res) {
+                    test("test median", function(  ) {
+                        equal(res.length, 2, "right number of elements eval normale");
+                        equal(res[1][4], 10, "median first rows");
+                        equal(res[0][4], 50026, "max second rows");
+                        console.log("test avg result", res);
+                    });
+                });
+
+                Ae.max(d, function(res) {
+                    test("test max", function(  ) {
+                        equal(res.length, 2, "right number of elements eval normale");
+                        equal(res[1][4], 10, "max first rows");
+                        equal(res[0][4], 100025, "max second rows");
+                        console.log("test avg result", res);
+                    });
+                });
+                Ae.min(d, function(res) {
+                    test("test min", function(  ) {
+                        equal(res.length, 2, "right number of elements eval normale");
+                        equal(res[1][4], -210, "avg first rows");
+                        equal(res[0][4], 26, "avg second rows");
+                        console.log("test avg result", res);
+                    });
+                });
+
+                d = [
+                ];
+                for (var i = 0; i < 20; i++) {
+                    d.push(["test1", "metric1", "node1", "01/01/2012", i + 26]);
+                }
+
+                Ae.eachRow(d,
+                        function(v) {
+                            return ['t1', 'm1', 'n1', 'now', 1];
+                        },
+                        function(r) {
+                            //console.log("success each argument",a);
+
+                            test('test each', function() {
+                                for (var i = 0; i < r.length; i++) {
+                                    equal(r[i][0], 't1');
+                                    equal(r[i][1], 'm1');
+                                    equal(r[i][2], 'n1');
+                                    equal(r[i][3], 'now');
+                                    equal(r[i][4], 1);
+                                }
+                            });
+
+                        });
+
+            });
+        </script>
+
+    </body>
+</html>
