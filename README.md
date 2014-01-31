@@ -185,3 +185,5 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+The framework relies on libraries which may have stricter licences. For instance, the Node Agent (version 1) uses the library [HighCharts](http://www.highcharts.com/) which is released with an [Attribution-NonCommercial 3.0 Unported Licence](http://creativecommons.org/licenses/by-nc/3.0/).
