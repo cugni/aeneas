@@ -1,2 +1,9 @@
 INFO: QTEST length 100 loading started at Fri Jan 31 11:10:10 CET 2014
 INFO: QTEST length 100 terminated at Fri Jan 31 11:10:10 CET 2014
+INFO: QTEST length 1000 loading started at Fri Jan 31 11:12:17 CET 2014
+INFO: QTEST length 1000 terminated at Fri Jan 31 11:12:17 CET 2014
+INFO: QTEST length 10000 loading started at Fri Jan 31 11:14:24 CET 2014
+INFO: QTEST length 10000 terminated at Fri Jan 31 11:14:24 CET 2014
+Starting mixed testing Fri Jan 31 11:14:24 CET 2014
+INFO: TTEST nthreads 10 loading started at Fri Jan 31 11:16:31 CET 2014
+INFO: TTEST nthreads 10 terminated at Fri Jan 31 11:16:31 CET 2014
