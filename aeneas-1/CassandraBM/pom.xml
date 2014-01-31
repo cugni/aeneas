@@ -13,7 +13,6 @@
         <module>node-agent</module>
          <module>codeGenerator</module>
         <module>cassandra-metrics-recorder</module>
-        <module>metrics-analyzer</module>
     <module>commons</module>
     </modules>
     <build>
